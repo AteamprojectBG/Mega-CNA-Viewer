@@ -53,6 +53,9 @@ const uniqueBAF = Object.keys(groupedBAF).map(item => {
 const bafLines = uniqueBAF.map((item, index) => {
   return {
     type: 'line',
+    tooltip: {
+      show: false,
+    },
     xAxisIndex: 0,
     yAxisIndex: 0,
     symbol: 'none',
@@ -74,6 +77,9 @@ const bafLines = uniqueBAF.map((item, index) => {
 const drLines = uniqueDR.map((yValue, index) => {
   return {
     type: 'line',
+    tooltip: {
+      show: false,
+    },
     symbol: 'none',
     xAxisIndex: 1,
     yAxisIndex: 1,
