@@ -183,12 +183,30 @@ chart.setOption({
 
 ```js
 
-function process_form(form){
-  try {
-    return [Number(form.purity), Number(form.ploidy), form.copy_numbers.split(',').filter(i => i !='' ).map(Number)]
-  } catch (e) {
-    display(e)
-  }
+function process_form(form_data) {
+    // Validate input
+    if (!form_data || typeof form_data !== 'object') {
+        throw new Error('Invalid form data');
+    }
+
+    // Parse purity and ploidy
+    let purity = parseFloat(form_data.purity);
+    let ploidy = parseFloat(form_data.ploidy);
+
+    if (isNaN(purity) || isNaN(ploidy)) {
+        throw new Error('Invalid purity or ploidy');
+    }
+
+    // Parse copy_numbers
+    let copy_numbers = form_data.copy_numbers.split(',')
+                          .map(num => parseFloat(num.trim()))
+                          .filter(num => !isNaN(num));
+
+    if (copy_numbers.length === 0) {
+        throw new Error('No valid copy numbers found');
+    }
+
+    return [purity, ploidy, copy_numbers];
 }
 const args = process_form(ppForm)
 const cnt = new CNATable(...args).table
