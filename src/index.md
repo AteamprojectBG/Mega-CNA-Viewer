@@ -49,6 +49,13 @@ const ppForm = view(Inputs.form({
     pattern: "\d+\.?\d*",
     required: true,
   }),
+  copy_numbers: Inputs.text({
+    label: "Ploidy",
+    placeholder: "Enter numbers of copies",
+    value: "2,3,4",
+    pattern: "\d+\,*\d*",
+    required: true,
+  }),
 }));
 
 // const csvfile = view(Inputs.file({label: "CSV file", accept: ".csv", required: true}))
