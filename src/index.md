@@ -33,32 +33,34 @@ toc: false
 
 ```js
 import * as echarts from "npm:echarts";
+import CNATable from "./cna_table.js"
 
 const ppForm = view(Inputs.form({
   purity: Inputs.text({
     label: "Purity",
     placeholder: "Enter purity",
     value: "0.83",
-    pattern: "\d+\.?\d*",
+    pattern: "\\d+\\.*?\\d*?",
     required: true,
+    submit: true
   }),
   ploidy: Inputs.text({
     label: "Ploidy",
     placeholder: "Enter ploidy",
     value: "2",
-    pattern: "\d+\.?\d*",
+    pattern: "\\d+\\.*?\\d*?",
     required: true,
+    submit: true
   }),
   copy_numbers: Inputs.text({
     label: "Ploidy",
     placeholder: "Enter numbers of copies",
     value: "2,3,4",
-    pattern: "\d+\,*\d*",
+    pattern: "(\\d+,?){1,}",
     required: true,
+    submit: true
   }),
 }));
-
-// const csvfile = view(Inputs.file({label: "CSV file", accept: ".csv", required: true}))
 
 const cnTable = await FileAttachment("data/cn_df.csv").csv();
 const scatterBafData = cnTable.map((row, index) => [index, row.BAF]);
@@ -179,9 +181,18 @@ chart.setOption({
 });
 ```
 
+```js
+
+function process_form(form){
+  return [Number(form.purity), Number(form.ploidy), form.copy_numbers.split(',').filter(i => i !='' ).map(Number)]
+}
+const args = process_form(ppForm)
+const cnt = new CNATable(...args).table
+display(cnt)
+```
 
 <section>
   <div class="baf-title">BAF</div>
   <div class="dr-title">DR</div>
   <div id="chart"></div>
-</section>
+</section
