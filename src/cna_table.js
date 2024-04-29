@@ -60,16 +60,18 @@ class CNATable {
      * @return {Object} Object with lists of BAF, DR, total and minor
      */
     static #build_cn_table(purity, ploidy, copy_numbers){
-        const table = {"BAF": [], "DR": [], "total": [], "minor": []}
+        const table = []
 
         copy_numbers.forEach(cn => {
             Array(CNATable.#get_max_b_num(cn)).fill(0).map((_, b_num) => {
                 const baf = CNATable.#get_b_allele_frequency(b_num, purity, cn)
                 const dr = CNATable.#get_depth_ratio(purity, ploidy, cn)
-                table["BAF"].push(baf)
-                table["DR"].push(dr)
-                table["total"].push(cn)
-                table["minor"].push(b_num)
+                table.push({
+                    'BAF': baf,
+                    'DR': dr,
+                    'total': cn,
+                    'minor': b_num,
+                })
             })
         });
 

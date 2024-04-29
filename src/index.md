@@ -16,6 +16,10 @@ toc: false
   overflow: hidden;
 }
 
+.chart-section {
+  position: relative;
+}
+
 .baf-title {
   position: absolute;
   left: 50%;
@@ -29,11 +33,24 @@ toc: false
   top: 50%;
   transform: translate(-50%, -50%);
 }
+
+.chr-input {
+  display: grid;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.error-msg {
+  color: red;
+  justify-self: end;
+}
 </style>
 
 ```js
 import * as echarts from "npm:echarts";
 import CNATable from "./cna_table.js"
+import ChartOption from "./chart_option.js"
 
 const ppForm = view(Inputs.form({
   purity: Inputs.text({
@@ -61,124 +78,6 @@ const ppForm = view(Inputs.form({
     submit: true
   }),
 }));
-
-const cnTable = await FileAttachment("data/cn_df.csv").csv();
-const scatterBafData = cnTable.map((row, index) => [index, row.BAF]);
-const scatterDrData = cnTable.map((row, index) => [index, row.DR]);
-
-const tdTable = await FileAttachment("data/teorethical_distribution.csv").csv();
-const lineLength = cnTable.length;
-const uniqueDR = [...new Set(tdTable.map(row => row.DR))];
-const uniqueTotal = [...new Set(tdTable.map(row => row.total))];
-const groupedBAF = Object.groupBy(tdTable, ({ BAF }) => BAF);
-const uniqueBAF = Object.keys(groupedBAF).map(item => {
-  return {
-    baf: item,
-    fraction: groupedBAF[item].map(row => `${row.minor}/${row.total}`).join(' '),
-  }
-});
-
-const bafLines = uniqueBAF.map((item, index) => {
-  return {
-    type: 'line',
-    tooltip: {
-      show: false,
-    },
-    xAxisIndex: 0,
-    yAxisIndex: 0,
-    symbol: 'none',
-    lineStyle: {
-      color: '#888',
-      type: 'dashed',
-    },
-    endLabel: {
-      show: true,
-      formatter: () => item.fraction,
-    },
-    data: [
-      [0, item.baf],
-      [lineLength, item.baf],
-    ],
-  }
-});
-
-const drLines = uniqueDR.map((yValue, index) => {
-  return {
-    type: 'line',
-    tooltip: {
-      show: false,
-    },
-    symbol: 'none',
-    xAxisIndex: 1,
-    yAxisIndex: 1,
-    lineStyle: {
-      color: '#888',
-      type: 'dashed',
-    },
-    endLabel: {
-      show: true,
-      formatter: () => uniqueTotal[index],
-    },
-    data: [
-      [0, yValue],
-      [lineLength, yValue],
-    ],
-  }
-});
-
-const chartDom = document.getElementById('chart');
-const chart = echarts.init(chartDom);
-window.addEventListener('resize', chart.resize);
-
-chart.setOption({
-  legend: {},
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: {
-      type: 'cross'
-    },
-  },
-  axisPointer: {
-    link: { xAxisIndex: 'all' },
-  },
-  xAxis: [
-    { gridIndex: 0 },
-    { gridIndex: 1 }
-  ],
-  yAxis: [{ gridIndex: 0, max: 0.6 }, { gridIndex: 1 }],
-  grid: [{ bottom: '55%' }, { top: '55%' }],
-  dataZoom: [
-    {
-      type: 'inside',
-      start: 0,
-      end: 10,
-      xAxisIndex: [0, 1],
-      filterMode: 'none'
-    },
-    {
-      start: 0,
-      end: 10,
-      xAxisIndex: [0, 1],
-      filterMode: 'none'
-    }
-  ],
-  series: [
-    {
-      type: 'scatter',
-      xAxisIndex: 0,
-      yAxisIndex: 0,
-      data: scatterBafData,
-    },
-    {
-      type: 'scatter',
-      xAxisIndex: 1,
-      yAxisIndex: 1,
-      data: scatterDrData,
-    },
-    ...bafLines,
-    ...drLines,
-  ]
-});
 ```
 
 ```js
@@ -208,13 +107,57 @@ function process_form(form_data) {
 
     return [purity, ploidy, copy_numbers];
 }
+
 const args = process_form(ppForm)
-const cnt = new CNATable(...args).table
-display(cnt)
+const tdTable = new CNATable(...args).table
+const cnTable = await FileAttachment("data/cn_df.csv").csv();
+const chartOption = new ChartOption(tdTable, cnTable);
+
+const chartDom = document.getElementById('chart');
+const chart = echarts.init(chartDom);
+window.addEventListener('resize', chart.resize);
+
+chart.setOption(chartOption.get_option());
 ```
 
-<section>
+```js
+const positionInput = html`<input type="text" placeholder="chrN:0000-0000">`;
+const position = Generators.input(positionInput);
+
+const regex = /^chr([1-9]|1[0-3]):\d+:\d+/g;
+
+const validatePosition = (currentPosition) => {
+  if (!currentPosition.match(regex)) {
+    return false;
+  }
+
+  return true;
+}
+
+const chartRenderer = (currentPosition) => {
+  if (!currentPosition.length) {
+    return '';
+  }
+
+  if (!validatePosition(currentPosition)) {
+    return 'Invalid pattern';
+  }
+
+  const [chr, posStart, posEnd] = currentPosition.split(':');
+  const cnTableFiltered = cnTable.filter(row => (row.chr === chr && +row.pos >= +posStart && +row.pos <= +posEnd));
+  const chartOption = new ChartOption(tdTable, cnTableFiltered);
+  chart.setOption(chartOption.get_option());
+  return '';
+}
+```
+
+<div class="card chr-input">
+  <div>Chromosome position: ${positionInput}</div>
+  <div class="error-msg">${chartRenderer(position)}</div>
+</div>
+
+<section class="chart-section">
   <div class="baf-title">BAF</div>
   <div class="dr-title">DR</div>
   <div id="chart"></div>
-</section
+</section>
