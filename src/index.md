@@ -184,7 +184,11 @@ chart.setOption({
 ```js
 
 function process_form(form){
-  return [Number(form.purity), Number(form.ploidy), form.copy_numbers.split(',').filter(i => i !='' ).map(Number)]
+  try {
+    return [Number(form.purity), Number(form.ploidy), form.copy_numbers.split(',').filter(i => i !='' ).map(Number)]
+  } catch (e) {
+    display(e)
+  }
 }
 const args = process_form(ppForm)
 const cnt = new CNATable(...args).table
