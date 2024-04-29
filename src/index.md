@@ -34,6 +34,25 @@ toc: false
 ```js
 import * as echarts from "npm:echarts";
 
+const ppForm = view(Inputs.form({
+  purity: Inputs.text({
+    label: "Purity",
+    placeholder: "Enter purity",
+    value: "0.83",
+    pattern: "\d+\.?\d*",
+    required: true,
+  }),
+  ploidy: Inputs.text({
+    label: "Ploidy",
+    placeholder: "Enter ploidy",
+    value: "2",
+    pattern: "\d+\.?\d*",
+    required: true,
+  }),
+}));
+
+// const csvfile = view(Inputs.file({label: "CSV file", accept: ".csv", required: true}))
+
 const cnTable = await FileAttachment("data/cn_df.csv").csv();
 const scatterBafData = cnTable.map((row, index) => [index, row.BAF]);
 const scatterDrData = cnTable.map((row, index) => [index, row.DR]);
@@ -152,6 +171,7 @@ chart.setOption({
   ]
 });
 ```
+
 
 <section>
   <div class="baf-title">BAF</div>
