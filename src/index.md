@@ -110,8 +110,8 @@ function process_form(form_data) {
 
 const args = process_form(ppForm)
 const tdTable = new CNATable(...args).table
-const cnTable = await FileAttachment("data/cn_df.csv").csv();
-const chartOption = new ChartOption(tdTable, cnTable);
+const dataTable = await FileAttachment("data/cn_df.csv").csv();
+const chartOption = new ChartOption(tdTable, dataTable);
 
 const chartDom = document.getElementById('chart');
 const chart = echarts.init(chartDom);
@@ -124,10 +124,10 @@ chart.setOption(chartOption.get_option());
 const positionInput = html`<input type="text" placeholder="chrN:0000-0000">`;
 const position = Generators.input(positionInput);
 
-const regex = /^chr([1-9]|1[0-3]):\d+:\d+/g;
+const pattern = /^chr([1-9]|1[0-3]):\d+:\d+/g;
 
 const validatePosition = (currentPosition) => {
-  if (!currentPosition.match(regex)) {
+  if (!currentPosition.match(pattern)) {
     return false;
   }
 
@@ -136,6 +136,8 @@ const validatePosition = (currentPosition) => {
 
 const chartRenderer = (currentPosition) => {
   if (!currentPosition.length) {
+    const chartOption = new ChartOption(tdTable, dataTable);
+    chart.setOption(chartOption.get_option());
     return '';
   }
 
@@ -144,8 +146,11 @@ const chartRenderer = (currentPosition) => {
   }
 
   const [chr, posStart, posEnd] = currentPosition.split(':');
-  const cnTableFiltered = cnTable.filter(row => (row.chr === chr && +row.pos >= +posStart && +row.pos <= +posEnd));
-  const chartOption = new ChartOption(tdTable, cnTableFiltered);
+  if (posEnd - posStart < 0) {
+    return 'The start position must be greater than the end position'
+  }
+  const dataTableFiltered = dataTable.filter(row => (row.chr === chr && +row.pos >= +posStart && +row.pos <= +posEnd));
+  const chartOption = new ChartOption(tdTable, dataTableFiltered);
   chart.setOption(chartOption.get_option());
   return '';
 }
