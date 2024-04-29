@@ -106,7 +106,21 @@ class ChartOption {
             tooltip: {
                 trigger: 'axis',
                 axisPointer: {
-                    ype: 'cross'
+                    type: 'cross',
+                },
+                formatter: (params) => {
+                    const series = params.map(item => {
+                        return `<div>
+                        <div style="
+                            display: inline-block;
+                            width: 10px;
+                            height: 10px;
+                            border-radius: 50%;
+                            background-color: ${item.color}">
+                        </div> ${(+item.data[1]).toFixed(5)}</div>`
+                    }).join('');
+
+                    return `<div>Position: ${params[0].axisValue}</div>${series}`;
                 },
             },
             axisPointer: {
@@ -122,13 +136,13 @@ class ChartOption {
                 {
                     type: 'inside',
                     startValue: 0,
-                    endValue: this.lineLength / 10,
+                    endValue: this.lineLength,
                     xAxisIndex: [0, 1],
                     filterMode: 'none',
                 },
                 {
                     startValue: 0,
-                    endValue: this.lineLength / 10,
+                    endValue: this.lineLength,
                     xAxisIndex: [0, 1],
                     filterMode: 'none',
                 }

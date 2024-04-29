@@ -154,7 +154,7 @@ chart.setOption(chartOption.get_option());
 const positionInput = html`<input type="text" placeholder="chrN:0000-0000">`;
 const position = Generators.input(positionInput);
 
-const pattern = /^chr([1-9]|1[0-3]):\d+:\d+/g;
+const pattern = /^chr([1-9]|1[0-3])(:\d+:\d+|$)/g;
 
 const validatePosition = (currentPosition) => {
   if (!currentPosition.match(pattern)) {
@@ -162,6 +162,14 @@ const validatePosition = (currentPosition) => {
   }
 
   return true;
+}
+
+const getFilteredData = (data, chr, posStart, posEnd) => {
+  if (posStart && posEnd) {
+    return data.filter(row => (row.chr === chr && +row.pos >= +posStart && +row.pos <= +posEnd));
+  }
+
+  return data.filter(row => row.chr === chr);
 }
 
 const chartRenderer = (currentPosition) => {
@@ -176,10 +184,12 @@ const chartRenderer = (currentPosition) => {
   }
 
   const [chr, posStart, posEnd] = currentPosition.split(':');
+  
   if (posEnd - posStart < 0) {
     return 'The start position must be greater than the end position'
   }
-  const dataTableFiltered = dataTable.filter(row => (row.chr === chr && +row.pos >= +posStart && +row.pos <= +posEnd));
+  
+  const dataTableFiltered = getFilteredData(dataTable, chr, posStart, posEnd);
   const chartOption = new ChartOption(tdTable, dataTableFiltered);
   chart.setOption(chartOption.get_option());
   return '';
