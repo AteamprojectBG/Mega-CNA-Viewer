@@ -62,15 +62,23 @@ const ppForm = view(Inputs.form({
     submit: true
   }),
   ploidy: Inputs.text({
-    label: "Ploidy",
-    placeholder: "Enter ploidy",
+    label: "Tumor ploidy",
+    placeholder: "Enter tumor ploidy",
     value: "2",
     pattern: "\\d+\\.*?\\d*?",
     required: true,
     submit: true
   }),
+  normal_ploidy: Inputs.text({
+    label: "Normal ploidy",
+    placeholder: "Enter normal ploidy",
+    value: "2",
+    pattern: "\\d+",
+    required: true,
+    submit: true
+  }),
   copy_numbers: Inputs.text({
-    label: "Ploidy",
+    label: "Copy numbers",
     placeholder: "Enter numbers of copies",
     value: "2,3,4",
     pattern: "(\\d+,?){1,}",
@@ -91,8 +99,9 @@ function process_form(form_data) {
     // Parse purity and ploidy
     let purity = parseFloat(form_data.purity);
     let ploidy = parseFloat(form_data.ploidy);
+    let normalPloidy = parseInt(form_data.normal_ploidy);
 
-    if (isNaN(purity) || isNaN(ploidy)) {
+    if (isNaN(purity) || isNaN(ploidy) || isNaN(normalPloidy)) {
         throw new Error('Invalid purity or ploidy');
     }
 
@@ -105,11 +114,12 @@ function process_form(form_data) {
         throw new Error('No valid copy numbers found');
     }
 
-    return [purity, ploidy, copy_numbers];
+    return [purity, ploidy, copy_numbers, normalPloidy];
 }
 
 const args = process_form(ppForm)
 const tdTable = new CNATable(...args).table
+display(tdTable)
 const dataTable = await FileAttachment("data/cn_df.csv").csv();
 const chartOption = new ChartOption(tdTable, dataTable);
 

@@ -5,13 +5,15 @@ class CNATable {
      * @param {number} purity - Fraction of tumor DNA in the sample
      * @param {number} ploidy - Number of sets of chromosomes
      * @param {Array} copies - List of numbers of copies
+     * @param {number} normal_ploidy - Number of sets of chromosomes in the normal sample
      * @return {Object} Object with lists of BAF, DR, total and minor
      */
-    constructor(purity, ploidy, copies) {
+    constructor(purity=1, ploidy=2, copies=[2,3,4], normal_ploidy = 2) {
         this.purity = purity;
         this.ploidy = ploidy;
         this.copies = copies;
-        this.table = CNATable.#build_cn_table(purity, ploidy, copies)
+        this.normal_ploidy = normal_ploidy;
+        this.table = CNATable.#buildCNTable(purity, ploidy, copies, normal_ploidy)
     }
 
     /**
@@ -19,11 +21,12 @@ class CNATable {
      * @param {number} minor - Number of B alleles
      * @param {number} purity - Fraction of tumor DNA in the sample
      * @param {number} total - Total number of copies of the region
+     * @param {number} normal_ploidy - Number of sets of chromosomes in the normal sample
      * @return {number} Frequency of B allele
      */
-    static #get_b_allele_frequency(minor, purity, total){
+    static #getBAlleleFrequency(minor, purity, total, normal_ploidy){
         const baf = ((minor * purity) + (1 - purity)) / (
-            (total * purity) + 2 * (1 - purity)
+            (total * purity) + normal_ploidy * (1 - purity)
         )
         return baf
     }
@@ -33,11 +36,12 @@ class CNATable {
      * @param {number} purity - Fraction of tumor DNA in the sample
      * @param {number} ploidy - Number of sets of chromosomes
      * @param {number} total - Total number of copies of the region
+     * @param {number} normal_ploidy - Number of sets of chromosomes in the normal sample
      * @return {number} Ratio of tumor coverage to normal coverage
      */
-    static #get_depth_ratio(purity, ploidy, total){
-        const depth_ratio = ((1 - purity) + ((total / 2) * purity)) / (
-            (ploidy / 2 * purity) + 1 - purity
+    static #getDepthRatio(purity, ploidy, total, normal_ploidy){
+        const depth_ratio = ((1 - purity) + ((total / normal_ploidy) * purity)) / (
+            (ploidy / normal_ploidy * purity) + 1 - purity
         )
         return depth_ratio
     }
@@ -48,7 +52,7 @@ class CNATable {
      * @return {number} Max value for a range of possible b numbers
      */
 
-    static #get_max_b_num(total){
+    static #getMaxBNum(total){
         return total % 2 ? Math.ceil(total / 2) : Math.floor(total / 2 + 1)
     }
 
@@ -59,13 +63,13 @@ class CNATable {
      * @param {number} copy_numbers - List of numbers of copies
      * @return {Object} Object with lists of BAF, DR, total and minor
      */
-    static #build_cn_table(purity, ploidy, copy_numbers){
+    static #buildCNTable(purity, ploidy, copy_numbers, normal_ploidy = 2){
         const table = []
 
         copy_numbers.forEach(cn => {
-            Array(CNATable.#get_max_b_num(cn)).fill(0).map((_, b_num) => {
-                const baf = CNATable.#get_b_allele_frequency(b_num, purity, cn)
-                const dr = CNATable.#get_depth_ratio(purity, ploidy, cn)
+            Array(CNATable.#getMaxBNum(cn)).fill(0).map((_, b_num) => {
+                const baf = CNATable.#getBAlleleFrequency(b_num, purity, cn, normal_ploidy)
+                const dr = CNATable.#getDepthRatio(purity, ploidy, cn, normal_ploidy)
                 table.push({
                     'BAF': baf,
                     'DR': dr,
