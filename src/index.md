@@ -86,11 +86,32 @@ const ppForm = view(Inputs.form({
     submit: true
   }),
 }));
+
+const csvfile = view(Inputs.file({label: "Load CSV file", accept: ".csv, .txt", required: true}));
+```
+
+```js
+let data = await csvfile.csv({typed: false})
+
+function validateData(data){
+  //TODO 
+}
+
+function parseData(data){
+  return data.map(row => ({
+    chr: row.chr.toString(),
+    pos: parseInt(row.pos),
+    BAF: parseFloat(row.BAF),
+    DR: parseFloat(row.DR),
+  }))
+}
+data = parseData(data)
+display(data)
 ```
 
 ```js
 
-function process_form(form_data) {
+function parseForm(form_data) {
     // Validate input
     if (!form_data || typeof form_data !== 'object') {
         throw new Error('Invalid form data');
@@ -117,9 +138,8 @@ function process_form(form_data) {
     return [purity, ploidy, copy_numbers, normalPloidy];
 }
 
-const args = process_form(ppForm)
+const args = parseForm(ppForm)
 const tdTable = new CNATable(...args).table
-display(tdTable)
 const dataTable = await FileAttachment("data/cn_df.csv").csv();
 const chartOption = new ChartOption(tdTable, dataTable);
 
