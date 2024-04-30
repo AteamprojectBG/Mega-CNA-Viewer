@@ -51,6 +51,7 @@ toc: false
 import * as echarts from "npm:echarts";
 import CNATable from "./cna_table.js"
 import ChartOption from "./chart_option.js"
+import * as parser from "./parser.js"
 
 const ppForm = view(Inputs.form({
   purity: Inputs.text({
@@ -92,53 +93,13 @@ const csvfile = view(Inputs.file({label: "Load CSV file", accept: ".csv, .txt", 
 
 ```js
 let data = await csvfile.csv({typed: false})
-
-function validateData(data){
-  //TODO 
-}
-
-function parseData(data){
-  return data.map(row => ({
-    chr: row.chr.toString(),
-    pos: parseInt(row.pos),
-    BAF: parseFloat(row.BAF),
-    DR: parseFloat(row.DR),
-  }))
-}
-data = parseData(data)
+data = parser.parseData(data)
 display(data)
 ```
 
 ```js
 
-function parseForm(form_data) {
-    // Validate input
-    if (!form_data || typeof form_data !== 'object') {
-        throw new Error('Invalid form data');
-    }
-
-    // Parse purity and ploidy
-    let purity = parseFloat(form_data.purity);
-    let ploidy = parseFloat(form_data.ploidy);
-    let normalPloidy = parseInt(form_data.normal_ploidy);
-
-    if (isNaN(purity) || isNaN(ploidy) || isNaN(normalPloidy)) {
-        throw new Error('Invalid purity or ploidy');
-    }
-
-    // Parse copy_numbers
-    let copy_numbers = form_data.copy_numbers.split(',')
-                          .map(num => parseFloat(num.trim()))
-                          .filter(num => !isNaN(num));
-
-    if (copy_numbers.length === 0) {
-        throw new Error('No valid copy numbers found');
-    }
-
-    return [purity, ploidy, copy_numbers, normalPloidy];
-}
-
-const args = parseForm(ppForm)
+const args = parser.parseForm(ppForm)
 const tdTable = new CNATable(...args).table
 const dataTable = await FileAttachment("data/cn_df.csv").csv();
 const chartOption = new ChartOption(tdTable, dataTable);
