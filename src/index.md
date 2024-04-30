@@ -53,6 +53,8 @@ import CNATable from "./cna_table.js"
 import ChartOption from "./chart_option.js"
 import * as parser from "./parser.js"
 
+const dataTable = Mutable([]);
+
 const ppForm = view(Inputs.form({
   purity: Inputs.text({
     label: "Purity",
@@ -92,17 +94,10 @@ const csvfile = view(Inputs.file({label: "Load CSV file", accept: ".csv, .txt", 
 ```
 
 ```js
-let data = await csvfile.csv({typed: false})
-data = parser.parseData(data)
-display(data)
-```
-
-```js
-
+dataTable.value = await FileAttachment("data/cn_df.csv").csv();
 const args = parser.parseForm(ppForm)
 const tdTable = new CNATable(...args).table
-const dataTable = await FileAttachment("data/cn_df.csv").csv();
-const chartOption = new ChartOption(tdTable, dataTable);
+const chartOption = new ChartOption(tdTable, dataTable.value);
 
 const chartDom = document.getElementById('chart');
 const chart = echarts.init(chartDom);
@@ -135,7 +130,7 @@ const getFilteredData = (data, chr, posStart, posEnd) => {
 
 const chartRenderer = (currentPosition) => {
   if (!currentPosition.length) {
-    const chartOption = new ChartOption(tdTable, dataTable);
+    const chartOption = new ChartOption(tdTable, dataTable.value);
     chart.setOption(chartOption.get_option());
     return '';
   }
@@ -150,11 +145,18 @@ const chartRenderer = (currentPosition) => {
     return 'The start position must be greater than the end position'
   }
   
-  const dataTableFiltered = getFilteredData(dataTable, chr, posStart, posEnd);
+  const dataTableFiltered = getFilteredData(dataTable.value, chr, posStart, posEnd);
   const chartOption = new ChartOption(tdTable, dataTableFiltered);
   chart.setOption(chartOption.get_option());
   return '';
 }
+```
+
+```js
+dataTable.value = await csvfile.csv({typed: false});
+dataTable.value = parser.parseData(dataTable.value);
+positionInput.value = '';
+chartRenderer('');
 ```
 
 <div class="card chr-input">
