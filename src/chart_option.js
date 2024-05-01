@@ -120,15 +120,47 @@ class ChartOption {
                         </div> ${(+item.data[1]).toFixed(5)}</div>`
                     }).join('');
 
-                    return `<div>Position: ${params[0].axisValue}</div>${series}`;
+                    const currentRow = this.dataTable[params[0].dataIndex];
+
+                    return `<div>${currentRow.chr} position: ${currentRow.pos}</div>${series}`;
                 },
             },
             axisPointer: {
                 link: { xAxisIndex: 'all' },
             },
             xAxis: [
-                { gridIndex: 0, maxInterval: this.lineLength / 10 },
-                { gridIndex: 1, maxInterval: this.lineLength / 10 }
+                {
+                    type: 'value',
+                    gridIndex: 0,
+                    maxInterval: this.lineLength / 10,
+                    axisLabel: {
+                        formatter: (value, /*index*/) => {
+                            // TODO. Show only one label. Calculate middle index.
+                            const row = this.dataTable[value];
+                            return row ? row.chr : '';
+                        },
+                        align: 'left'
+                    },
+                    axisTick: {
+                        show: false,
+                    },
+                },
+                {
+                    type: 'value',
+                    gridIndex: 1,
+                    maxInterval: this.lineLength / 10,
+                    axisLabel: {
+                        formatter: (value, /*index*/) => {
+                            // TODO. Show only one label. Calculate middle index.
+                            const row = this.dataTable[value];
+                            return row ? row.chr : '';
+                        },
+                        align: 'left'
+                    },
+                    axisTick: {
+                        show: false,
+                    },
+                }
             ],
             yAxis: [{ gridIndex: 0, max: 0.6 }, { gridIndex: 1 }],
             grid: [{ bottom: '55%' }, { top: '55%' }],
