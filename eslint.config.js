@@ -1,6 +1,7 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
 import jsdoc from 'eslint-plugin-jsdoc';
+import eslintConfigPrettier from "eslint-config-prettier";
 
 
 export default [
@@ -63,5 +64,6 @@ export default [
           "jsdoc/tag-lines": 1, // Recommended
           "jsdoc/valid-types": 1 // Recommended
       }
-  }
+  },
+  eslintConfigPrettier
 ];
