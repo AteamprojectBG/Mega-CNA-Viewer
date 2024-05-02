@@ -1,5 +1,5 @@
 /**
- * @file Class creates a chart options object.
+ * @file Chart options object class.
  */
 
 /** Class creates a chart options object. */
