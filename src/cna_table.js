@@ -67,7 +67,7 @@ class CNATable {
      * @param {number} purity - Fraction of tumor DNA in the sample.
      * @param {number} ploidy - Number of sets of chromosomes.
      * @param {number[]} copy_numbers - List of numbers of copies.
-     * @param {number} normal_ploidy - Number of sets of chromosomes in the normal sample.
+     * @param {number} [normal_ploidy=2] - Number of sets of chromosomes in the normal sample.
      * @returns {object} Object with lists of BAF, DR, total and minor.
      */
     static #buildCNTable(purity, ploidy, copy_numbers, normal_ploidy = 2){
