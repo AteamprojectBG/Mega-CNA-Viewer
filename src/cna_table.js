@@ -12,7 +12,6 @@ class CNATable {
      * @param {number} ploidy - Number of sets of chromosomes.
      * @param {number[]} copy_numbers - List of numbers of copies.
      * @param {number} normal_ploidy - Number of sets of chromosomes in the normal sample.
-     * @returns {object} Object with lists of BAF, DR, total and minor.
      */
     constructor(purity=1, ploidy=2, copy_numbers=[2,3,4], normal_ploidy = 2) {
         this.purity = purity;
