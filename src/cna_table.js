@@ -1,7 +1,7 @@
 // @ts-check
 
 /**
- * @file Class representing a table of DR and BAF theoretical distribution based on given purity, ploidy and copy numbers.
+ * @file Class representing a table of DR and BAF theoretical distribution based on given purity, ploidy, normal ploidy and copy numbers.
  */
 
 /** Class representing a table of DR and BAF theoretical distribution. */
