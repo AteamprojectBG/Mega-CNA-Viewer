@@ -94,7 +94,7 @@ const csvfile = view(Inputs.file({label: "Load CSV file", accept: ".csv, .txt", 
 ```
 
 ```js
-dataTable.value = await FileAttachment("data/cn_df.csv").csv();
+dataTable.value = await FileAttachment("data/cn_df.csv").csv(); // load sample data
 const args = parser.parseForm(ppForm)
 const tdTable = new CNATable(...args).table
 const chartOption = new ChartOption(tdTable, dataTable.value);
