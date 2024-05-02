@@ -4,99 +4,62 @@ title: CNA Viewer
 toc: false
 ---
 
-<style>
-* {
-  margin: 0;
-  padding: 0;
-}
-
-#chart {
-  position: relative;
-  height: 80vh;
-  overflow: hidden;
-}
-
-.chart-section {
-  position: relative;
-}
-
-.baf-title {
-  position: absolute;
-  left: 50%;
-  top: 5%;
-  transform: translate(-5%, -50%);
-}
-
-.dr-title {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.chr-input {
-  display: grid;
-  gap: 0.5rem;
-  justify-content: center;
-  align-items: center;
-}
-
-.error-msg {
-  color: red;
-  justify-self: end;
-}
-</style>
+<link rel="stylesheet" href="./style.css">
 
 ```js
-import * as echarts from "npm:echarts";
-import CNATable from "./cna_table.js"
-import ChartOption from "./chart_option.js"
-import * as parser from "./parser.js"
+import * as echarts from 'npm:echarts';
+import CNATable from './cna_table.js';
+import ChartOption from './chart_option.js';
+import * as parser from './parser.js';
 
 const dataTable = Mutable([]);
 
-const ppForm = view(Inputs.form({
-  purity: Inputs.text({
-    label: "Purity",
-    placeholder: "Enter purity",
-    value: "0.83",
-    pattern: "\\d+\\.*?\\d*?",
-    required: true,
-    submit: true
+const ppForm = view(
+  Inputs.form({
+    purity: Inputs.text({
+      label: 'Purity',
+      placeholder: 'Enter purity',
+      value: '0.83',
+      pattern: '\\d+\\.*?\\d*?',
+      required: true,
+      submit: true,
+    }),
+    ploidy: Inputs.text({
+      label: 'Tumor ploidy',
+      placeholder: 'Enter tumor ploidy',
+      value: '2',
+      pattern: '\\d+\\.*?\\d*?',
+      required: true,
+      submit: true,
+    }),
+    normal_ploidy: Inputs.text({
+      label: 'Normal ploidy',
+      placeholder: 'Enter normal ploidy',
+      value: '2',
+      pattern: '\\d+',
+      required: true,
+      submit: true,
+    }),
+    copy_numbers: Inputs.text({
+      label: 'Copy numbers',
+      placeholder: 'Enter numbers of copies',
+      value: '2,3,4',
+      pattern: '(\\d+,?){1,}',
+      required: true,
+      submit: true,
+    }),
   }),
-  ploidy: Inputs.text({
-    label: "Tumor ploidy",
-    placeholder: "Enter tumor ploidy",
-    value: "2",
-    pattern: "\\d+\\.*?\\d*?",
-    required: true,
-    submit: true
-  }),
-  normal_ploidy: Inputs.text({
-    label: "Normal ploidy",
-    placeholder: "Enter normal ploidy",
-    value: "2",
-    pattern: "\\d+",
-    required: true,
-    submit: true
-  }),
-  copy_numbers: Inputs.text({
-    label: "Copy numbers",
-    placeholder: "Enter numbers of copies",
-    value: "2,3,4",
-    pattern: "(\\d+,?){1,}",
-    required: true,
-    submit: true
-  }),
-}));
+);
 
-const csvfile = view(Inputs.file({label: "Load CSV file", accept: ".csv, .txt", required: true}));
+const csvfile = view(
+  Inputs.file({ label: 'Load CSV file', accept: '.csv, .txt', required: true }),
+);
 ```
 
 ```js
-dataTable.value = await FileAttachment("data/cn_df.csv").csv(); // load sample data
-const args = parser.parseForm(ppForm)
-const tdTable = new CNATable(...args).table
+dataTable.value = await FileAttachment('data/cn_df.csv').csv(); // load sample data
+const args = parser.parseForm(ppForm);
+const tdTable = new CNATable(...args).table;
 const chartOption = new ChartOption(tdTable, dataTable.value);
 
 const chartDom = document.getElementById('chart');
@@ -107,7 +70,7 @@ chart.setOption(chartOption.get_option());
 ```
 
 ```js
-const positionInput = html`<input type="text" placeholder="chrN:0000-0000">`;
+const positionInput = html`<input type="text" placeholder="chrN:0000-0000" />`;
 const position = Generators.input(positionInput);
 
 const pattern = /^chr([1-9]|1[0-3])(:\d+:\d+|$)/g;
@@ -118,15 +81,17 @@ const validatePosition = (currentPosition) => {
   }
 
   return true;
-}
+};
 
 const getFilteredData = (data, chr, posStart, posEnd) => {
   if (posStart && posEnd) {
-    return data.filter(row => (row.chr === chr && +row.pos >= +posStart && +row.pos <= +posEnd));
+    return data.filter(
+      (row) => row.chr === chr && +row.pos >= +posStart && +row.pos <= +posEnd,
+    );
   }
 
-  return data.filter(row => row.chr === chr);
-}
+  return data.filter((row) => row.chr === chr);
+};
 
 const chartRenderer = (currentPosition) => {
   if (!currentPosition.length) {
@@ -140,20 +105,25 @@ const chartRenderer = (currentPosition) => {
   }
 
   const [chr, posStart, posEnd] = currentPosition.split(':');
-  
+
   if (posEnd - posStart < 0) {
-    return 'The start position must be greater than the end position'
+    return 'The start position must be greater than the end position';
   }
-  
-  const dataTableFiltered = getFilteredData(dataTable.value, chr, posStart, posEnd);
+
+  const dataTableFiltered = getFilteredData(
+    dataTable.value,
+    chr,
+    posStart,
+    posEnd,
+  );
   const chartOption = new ChartOption(tdTable, dataTableFiltered);
   chart.setOption(chartOption.get_option());
   return '';
-}
+};
 ```
 
 ```js
-dataTable.value = await csvfile.csv({typed: false});
+dataTable.value = await csvfile.csv({ typed: false });
 dataTable.value = parser.parseData(dataTable.value);
 positionInput.value = '';
 chartRenderer('');

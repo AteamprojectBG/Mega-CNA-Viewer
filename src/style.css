@@ -1,0 +1,40 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+#chart {
+  position: relative;
+  height: 80vh;
+  overflow: hidden;
+}
+
+.chart-section {
+  position: relative;
+}
+
+.baf-title {
+  position: absolute;
+  left: 50%;
+  top: 5%;
+  transform: translate(-5%, -50%);
+}
+
+.dr-title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.chr-input {
+  display: grid;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.error-msg {
+  color: red;
+  justify-self: end;
+}
