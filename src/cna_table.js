@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * @file Class representing a table of DR and BAF theoretical distribution based on given purity, ploidy and copy numbers.
  */
@@ -8,16 +10,16 @@ class CNATable {
      * Create a table of DR and BAF theoretical distribution.
      * @param {number} purity - Fraction of tumor DNA in the sample.
      * @param {number} ploidy - Number of sets of chromosomes.
-     * @param {Array} copies - List of numbers of copies.
+     * @param {number[]} copy_numbers - List of numbers of copies.
      * @param {number} normal_ploidy - Number of sets of chromosomes in the normal sample.
      * @returns {object} Object with lists of BAF, DR, total and minor.
      */
-    constructor(purity=1, ploidy=2, copies=[2,3,4], normal_ploidy = 2) {
+    constructor(purity=1, ploidy=2, copy_numbers=[2,3,4], normal_ploidy = 2) {
         this.purity = purity;
         this.ploidy = ploidy;
-        this.copies = copies;
+        this.copy_numbers = copy_numbers;
         this.normal_ploidy = normal_ploidy;
-        this.table = CNATable.#buildCNTable(purity, ploidy, copies, normal_ploidy)
+        this.table = CNATable.#buildCNTable(purity, ploidy, copy_numbers, normal_ploidy)
     }
 
     /**
@@ -64,7 +66,7 @@ class CNATable {
      * Returns a dictionary with lists of BAF, DR, total and minor.
      * @param {number} purity - Fraction of tumor DNA in the sample.
      * @param {number} ploidy - Number of sets of chromosomes.
-     * @param {number} copy_numbers - List of numbers of copies.
+     * @param {number[]} copy_numbers - List of numbers of copies.
      * @param {number} normal_ploidy - Number of sets of chromosomes in the normal sample.
      * @returns {object} Object with lists of BAF, DR, total and minor.
      */

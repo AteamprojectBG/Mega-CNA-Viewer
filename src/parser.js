@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * @file Parser functions for Mega-CNA-Viewer.
  */
