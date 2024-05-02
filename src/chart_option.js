@@ -1,9 +1,13 @@
+/**
+ * @file Class creates a chart options object.
+ */
+
 /** Class creates a chart options object. */
 class ChartOption {
     /**
-     * 
-     * @param {Array} tdTable - Theoretical distribution
-     * @param {Array} dataTable - Loaded data
+     * Chart options object constructor.
+     * @param {Array} tdTable - Theoretical distribution.
+     * @param {Array} dataTable - Loaded data.
      */
     constructor(tdTable, dataTable) {
         this.tdTable = tdTable
@@ -16,9 +20,9 @@ class ChartOption {
     }
 
     /**
-     * Returns list of BAF y axis positions and labels for line generation
-     * @param {Array} tdTable - Theoretical distribution
-     * @return {Array} - List of BAF y axis positions and labels
+     * Returns list of BAF y axis positions and labels for line generation.
+     * @param {Array} tdTable - Theoretical distribution.
+     * @returns {Array} - List of BAF y axis positions and labels.
      */
     static #build_unique_baf(tdTable) {
         const groupedBAF = Object.groupBy(tdTable, ({ BAF }) => BAF);
@@ -33,9 +37,9 @@ class ChartOption {
     }
 
     /**
-     * Returns list of DR y axis positions and labels for line generation
-     * @param {Array} tdTable - Theoretical distribution
-     * @return {Array} - List of DR y axis positions and labels
+     * Returns list of DR y axis positions and labels for line generation.
+     * @param {Array} tdTable - Theoretical distribution.
+     * @returns {Array} - List of DR y axis positions and labels.
      */
     static #build_unique_dr(tdTable) {
         const uniqueTotal = [...new Set(tdTable.map(row => row.total))];
@@ -50,12 +54,12 @@ class ChartOption {
     }
 
     /**
-     * Returns list of line series
-     * @param {Array} itemList - List of y axis positions and labels
-     * @param {number} lineLength - Length of the line
-     * @param {number} xAxisIndex - Grid x index
-     * @param {number} yAxisIndex - Grid y index
-     * @returns {Array} - List of line series
+     * Returns list of line series.
+     * @param {Array} itemList - List of y axis positions and labels.
+     * @param {number} lineLength - Length of the line.
+     * @param {number} xAxisIndex - Grid x index.
+     * @param {number} yAxisIndex - Grid y index.
+     * @returns {Array} - List of line series.
      */
     static #generate_lines(itemList, lineLength, xAxisIndex=0, yAxisIndex=0) {
         return itemList.map((item) => {
@@ -84,9 +88,9 @@ class ChartOption {
     }
 
     /**
-     * Returns adjusted length for better x axis splitting
-     * @param {number} length - Default length of loaded data
-     * @returns {number} - Adjusted length
+     * Returns adjusted length for better x axis splitting.
+     * @param {number} length - Default length of loaded data.
+     * @returns {number} - Adjusted length.
      */
     static #get_line_length(length) {
         if (length < 10) {
@@ -97,8 +101,8 @@ class ChartOption {
     }
 
     /**
-     * Returns generated chart option
-     * @returns {Object} - Chart option
+     * Returns generated chart option.
+     * @returns {object} - Chart option.
      */
     get_option() {
         return {
