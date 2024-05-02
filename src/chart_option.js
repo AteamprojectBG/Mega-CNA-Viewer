@@ -12,11 +12,10 @@ class ChartOption {
     constructor(tdTable, dataTable) {
         this.tdTable = tdTable
         this.dataTable = dataTable
-        this.lineLength = ChartOption.#get_line_length(this.dataTable.length);
         this.scatterBafData = dataTable.map((row, index) => [index, row.BAF]);
         this.scatterDrData = dataTable.map((row, index) => [index, row.DR]);
-        this.bafLines = ChartOption.#generate_lines(ChartOption.#build_unique_baf(this.tdTable), this.lineLength);
-        this.drLines = ChartOption.#generate_lines(ChartOption.#build_unique_dr(this.tdTable), this.lineLength, 1, 1);
+        this.bafLines = ChartOption.#generate_lines(ChartOption.#build_unique_baf(this.tdTable), this.dataTable);
+        this.drLines = ChartOption.#generate_lines(ChartOption.#build_unique_dr(this.tdTable), this.dataTable);
     }
 
     /**
@@ -54,50 +53,38 @@ class ChartOption {
     }
 
     /**
-     * Returns list of line series.
+     * Returns markLine object.
      * @param {Array} itemList - List of y axis positions and labels.
-     * @param {number} lineLength - Length of the line.
-     * @param {number} xAxisIndex - Grid x index.
-     * @param {number} yAxisIndex - Grid y index.
-     * @returns {Array} - List of line series.
+     * @param {Array} dataTable - Loaded data.
+     * @returns {Object} - Object of horizontal and vertical lines.
      */
-    static #generate_lines(itemList, lineLength, xAxisIndex=0, yAxisIndex=0) {
-        return itemList.map((item) => {
-            return {
-                type: 'line',
-                tooltip: {
-                    show: false,
-                },
-                xAxisIndex: xAxisIndex,
-                yAxisIndex: yAxisIndex,
-                symbol: 'none',
-                lineStyle: {
-                    color: '#888',
-                    type: 'dashed',
-                },
-                endLabel: {
-                    show: true,
-                    formatter: () => item.label,
-                },
-                data: [
-                    [0, item.yValue],
-                    [lineLength, item.yValue],
-                ],
-            }
+    static #generate_lines(itemList, dataTable) {
+        const horizontalLines = itemList.map((item, index) => {
+            return { yAxis: item.yValue, name: index };
         });
-    }
 
-    /**
-     * Returns adjusted length for better x axis splitting.
-     * @param {number} length - Default length of loaded data.
-     * @returns {number} - Adjusted length.
-     */
-    static #get_line_length(length) {
-        if (length < 10) {
-            return 10;
+        const chromosomes = [...new Set(dataTable.map(row => row.chr))];
+
+        const verticalLines = chromosomes.map((chr, index) => {
+            const xValue = dataTable.findLastIndex(item => item.chr === chr);
+            return { xAxis: xValue, name: index };
+        })
+        return {
+            markLine: {
+                data: [...verticalLines, ...horizontalLines],
+                symbol: 'none',
+                label: {
+                    position: 'end',
+                    formatter: (params) => {
+                        if (params.data.yAxis) {
+                            return itemList[params.name].label;
+                        }
+
+                        return chromosomes[params.name];
+                    }
+                }
+            },
         }
-
-        return length % 10 ? Math.ceil(length / 10) * 10 : length;
     }
 
     /**
@@ -126,7 +113,7 @@ class ChartOption {
 
                     const currentRow = this.dataTable[params[0].dataIndex];
 
-                    return `<div>${currentRow.chr} position: ${currentRow.pos}</div>${series}`;
+                    return `<div>${currentRow.chr}:${currentRow.pos}</div>${series}`;
                 },
             },
             axisPointer: {
@@ -136,14 +123,8 @@ class ChartOption {
                 {
                     type: 'value',
                     gridIndex: 0,
-                    maxInterval: this.lineLength / 10,
                     axisLabel: {
-                        formatter: (value, /*index*/) => {
-                            // TODO. Show only one label. Calculate middle index.
-                            const row = this.dataTable[value];
-                            return row ? row.chr : '';
-                        },
-                        align: 'left'
+                        show: false,
                     },
                     axisTick: {
                         show: false,
@@ -152,14 +133,8 @@ class ChartOption {
                 {
                     type: 'value',
                     gridIndex: 1,
-                    maxInterval: this.lineLength / 10,
                     axisLabel: {
-                        formatter: (value, /*index*/) => {
-                            // TODO. Show only one label. Calculate middle index.
-                            const row = this.dataTable[value];
-                            return row ? row.chr : '';
-                        },
-                        align: 'left'
+                        show: false,
                     },
                     axisTick: {
                         show: false,
@@ -172,13 +147,13 @@ class ChartOption {
                 {
                     type: 'inside',
                     startValue: 0,
-                    endValue: this.lineLength,
+                    endValue: this.dataTable.length,
                     xAxisIndex: [0, 1],
                     filterMode: 'none',
                 },
                 {
                     startValue: 0,
-                    endValue: this.lineLength,
+                    endValue: this.dataTable.length,
                     xAxisIndex: [0, 1],
                     filterMode: 'none',
                 }
@@ -189,16 +164,16 @@ class ChartOption {
                     xAxisIndex: 0,
                     yAxisIndex: 0,
                     data: this.scatterBafData,
+                    ...this.bafLines,
                 },
                 {
                     type: 'scatter',
                     xAxisIndex: 1,
                     yAxisIndex: 1,
                     data: this.scatterDrData,
+                    ...this.drLines,
                 },
-                ...this.bafLines,
-                ...this.drLines,
-            ]
+            ],
         }
     }
 }

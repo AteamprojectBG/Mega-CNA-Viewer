@@ -73,7 +73,7 @@ chart.setOption(chartOption.get_option());
 const positionInput = html`<input type="text" placeholder="chrN:0000-0000" />`;
 const position = Generators.input(positionInput);
 
-const pattern = /^chr([1-9]|1[0-3])(:\d+:\d+|$)/g;
+const pattern = /^chr([1-9XY]|1[0-9]|2[0-2])(:\d+:\d+|$)/g;
 
 const validatePosition = (currentPosition) => {
   if (!currentPosition.match(pattern)) {
