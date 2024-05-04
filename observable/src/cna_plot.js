@@ -2,6 +2,12 @@ import * as echarts from 'npm:echarts';
 import ChartOption from './chart_option.js';
 
 class CNAPlot {
+    /**
+    * Chart plot constructor.
+    * @param {string} id - Chart id.
+    * @param {Array} tdTable - Theoretical distribution.
+    * @param {Array} dataTable - Loaded data.
+    */
     constructor(id, tdTable, dataTable) {
         this.tdTable = tdTable;
         this.dataTable = dataTable;
@@ -16,6 +22,13 @@ class CNAPlot {
         // });
     }
 
+    /**
+     * Returns filtered data.
+     * @param {string} chr - Chromosome name.
+     * @param {number} posStart - Segment starting position index.
+     * @param {number} posEnd - Segment end position index.
+     * @returns {Array} - Filtered data.
+     */
     #getFilteredData = (chr, posStart, posEnd) => {
         if (posStart && posEnd) {
             return this.dataTable.filter(
@@ -26,6 +39,11 @@ class CNAPlot {
         return this.dataTable.filter((row) => row.chr === chr);
     };
 
+    /**
+     * Returns pattern matching status.
+     * @param {string} position - Chromosome position.
+     * @returns {boolean} - Pattern matching status.
+     */
     #validatePosition = (position) => {
         if (!position.match(this.pattern)) {
             return false;
@@ -34,10 +52,19 @@ class CNAPlot {
         return true;
     };
 
+    /**
+     * Updates data table.
+     * @param {Array} dataTable - Loaded data.
+     */
     updateDataTable = (dataTable) => {
         this.dataTable = dataTable;
     };
 
+    /**
+     * Returns message about position status.
+     * @param {string} position - Chromosome position.
+     * @returns {string} - Message about position status.
+     */
     rerenderPlot = (position='') => {
         if (!position.length) {
             const chartOption = new ChartOption(this.tdTable, this.dataTable);
@@ -57,8 +84,8 @@ class CNAPlot {
         
         const dataTableFiltered = this.#getFilteredData(
             chr,
-            posStart,
-            posEnd,
+            +posStart,
+            +posEnd,
         );
 
         const chartOption = new ChartOption(this.tdTable, dataTableFiltered);
