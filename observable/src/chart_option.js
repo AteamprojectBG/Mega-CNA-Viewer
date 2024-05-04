@@ -115,6 +115,15 @@ class ChartOption {
                 trigger: 'axis',
                 axisPointer: {
                     type: 'cross',
+                    label: {
+                        formatter: (params) => { 
+                            if (params.axisDimension === 'x') {
+                                return this.dataTable[params.value].pos;
+                            }
+
+                            return params.value.toFixed(2);
+                        },
+                    }
                 },
                 formatter: (params) => {
                     const series = params.map(item => {
