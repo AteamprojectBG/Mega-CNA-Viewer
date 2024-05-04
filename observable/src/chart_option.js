@@ -107,10 +107,10 @@ class ChartOption {
     getOption() {
         return {
             legend: {},
-            brush: {
-                toolbox: ['lineX'],
-                type: 'lineX',
-            },
+            // brush: {
+            //     toolbox: ['lineX'],
+            //     type: 'lineX',
+            // },
             tooltip: {
                 trigger: 'axis',
                 axisPointer: {

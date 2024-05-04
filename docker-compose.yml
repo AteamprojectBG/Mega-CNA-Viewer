@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  observable:
+    build:
+      context: ./observable
+      dockerfile: Dockerfile
+    command: "npm run dev"
+    ports:
+      - 3000:3000
+    volumes:
+      - ./observable:/app
+      - node_modules:/app/node_modules
+volumes:
+  node_modules:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./observable/node_modules
