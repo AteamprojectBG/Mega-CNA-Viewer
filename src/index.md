@@ -60,6 +60,7 @@ const csvfile = view(
 dataTable.value = await FileAttachment('data/cn_df.csv').csv(); // load sample data
 const args = parser.parseForm(ppForm);
 const tdTable = new CNATable(...args).table;
+display(tdTable); // для дебага пусть пока висит
 const chartOption = new ChartOption(tdTable, dataTable.value);
 
 const chartDom = document.getElementById('chart');
