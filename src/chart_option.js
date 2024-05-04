@@ -14,17 +14,16 @@ class ChartOption {
         this.dataTable = dataTable
         this.scatterBafData = dataTable.map((row, index) => [index, row.BAF]);
         this.scatterDrData = dataTable.map((row, index) => [index, row.DR]);
-        this.bafLines = ChartOption.#generate_lines(ChartOption.#build_unique_baf(this.tdTable), this.dataTable);
-        this.drLines = ChartOption.#generate_lines(ChartOption.#build_unique_dr(this.tdTable), this.dataTable);
+        this.bafLines = this.#generateLines(this.#buildUniqueBaf(this.tdTable));
+        this.drLines = this.#generateLines(this.#buildUniqueDr(this.tdTable));
     }
 
     /**
      * Returns list of BAF y axis positions and labels for line generation.
-     * @param {Array} tdTable - Theoretical distribution.
      * @returns {Array} - List of BAF y axis positions and labels.
      */
-    static #build_unique_baf(tdTable) {
-        const groupedBAF = Object.groupBy(tdTable, ({ BAF }) => BAF);
+    #buildUniqueBaf() {
+        const groupedBAF = Object.groupBy(this.tdTable, ({ BAF }) => BAF);
         const uniqueBAF = Object.keys(groupedBAF).map(item => {
             return {
                 yValue: item,
@@ -37,12 +36,11 @@ class ChartOption {
 
     /**
      * Returns list of DR y axis positions and labels for line generation.
-     * @param {Array} tdTable - Theoretical distribution.
      * @returns {Array} - List of DR y axis positions and labels.
      */
-    static #build_unique_dr(tdTable) {
-        const uniqueTotal = [...new Set(tdTable.map(row => row.total))];
-        const uniqueDR = [...new Set(tdTable.map(row => row.DR))].map((item, index) => {
+    #buildUniqueDr() {
+        const uniqueTotal = [...new Set(this.tdTable.map(row => row.total))];
+        const uniqueDR = [...new Set(this.tdTable.map(row => row.DR))].map((item, index) => {
             return {
                 yValue: item,
                 label: uniqueTotal[index],
@@ -55,20 +53,35 @@ class ChartOption {
     /**
      * Returns markLine object.
      * @param {Array} itemList - List of y axis positions and labels.
-     * @param {Array} dataTable - Loaded data.
      * @returns {Object} - Object of horizontal and vertical lines.
      */
-    static #generate_lines(itemList, dataTable) {
+    #generateLines(itemList) {
         const horizontalLines = itemList.map((item, index) => {
-            return { yAxis: item.yValue, name: index };
+            return {
+                yAxis: item.yValue,
+                name: index,
+                label: {
+                    show: false,
+                },
+                emphasis: {
+                    disabled: false,
+                },
+            };
         });
 
-        const chromosomes = [...new Set(dataTable.map(row => row.chr))];
+        const chromosomes = [...new Set(this.dataTable.map(row => row.chr))];
 
         const verticalLines = chromosomes.map((chr, index) => {
-            const xValue = dataTable.findLastIndex(item => item.chr === chr);
-            return { xAxis: xValue, name: index };
+            const xValue = this.dataTable.findLastIndex(item => item.chr === chr);
+            return {
+                xAxis: xValue,
+                name: index,
+                label: {
+                    show: true,
+                },
+            };
         })
+
         return {
             markLine: {
                 data: [...verticalLines, ...horizontalLines],
@@ -80,7 +93,7 @@ class ChartOption {
                             return itemList[params.name].label;
                         }
 
-                        return chromosomes[params.name];
+                        return `${chromosomes[params.name]}`;
                     }
                 }
             },
@@ -91,9 +104,13 @@ class ChartOption {
      * Returns generated chart option.
      * @returns {object} - Chart option.
      */
-    get_option() {
+    getOption() {
         return {
             legend: {},
+            brush: {
+                toolbox: ['lineX'],
+                type: 'lineX',
+            },
             tooltip: {
                 trigger: 'axis',
                 axisPointer: {
@@ -178,4 +195,4 @@ class ChartOption {
     }
 }
 
-export default ChartOption
+export default ChartOption;

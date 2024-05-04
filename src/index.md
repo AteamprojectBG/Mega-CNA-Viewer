@@ -7,9 +7,8 @@ toc: false
 <link rel="stylesheet" href="./style.css">
 
 ```js
-import * as echarts from 'npm:echarts';
 import CNATable from './cna_table.js';
-import ChartOption from './chart_option.js';
+import CNAPlot from './cna_plot.js';
 import * as parser from './parser.js';
 
 const dataTable = Mutable([]);
@@ -61,78 +60,30 @@ dataTable.value = await FileAttachment('data/cn_df.csv').csv(); // load sample d
 const args = parser.parseForm(ppForm);
 const tdTable = new CNATable(...args).table;
 display(tdTable); // для дебага пусть пока висит
-const chartOption = new ChartOption(tdTable, dataTable.value);
-
-const chartDom = document.getElementById('chart');
-const chart = echarts.init(chartDom);
-window.addEventListener('resize', chart.resize);
-
-chart.setOption(chartOption.get_option());
+const cnaPlot = new CNAPlot('chart', tdTable, dataTable.value);
 ```
 
 ```js
 const positionInput = html`<input type="text" placeholder="chrN:0000-0000" />`;
 const position = Generators.input(positionInput);
 
-const pattern = /^chr([1-9XY]|1[0-9]|2[0-2])(:\d+:\d+|$)/g;
-
-const validatePosition = (currentPosition) => {
-  if (!currentPosition.match(pattern)) {
-    return false;
-  }
-
-  return true;
-};
-
-const getFilteredData = (data, chr, posStart, posEnd) => {
-  if (posStart && posEnd) {
-    return data.filter(
-      (row) => row.chr === chr && +row.pos >= +posStart && +row.pos <= +posEnd,
-    );
-  }
-
-  return data.filter((row) => row.chr === chr);
-};
-
-const chartRenderer = (currentPosition) => {
-  if (!currentPosition.length) {
-    const chartOption = new ChartOption(tdTable, dataTable.value);
-    chart.setOption(chartOption.get_option());
-    return '';
-  }
-
-  if (!validatePosition(currentPosition)) {
-    return 'Invalid pattern';
-  }
-
-  const [chr, posStart, posEnd] = currentPosition.split(':');
-
-  if (posEnd - posStart < 0) {
-    return 'The start position must be greater than the end position';
-  }
-
-  const dataTableFiltered = getFilteredData(
-    dataTable.value,
-    chr,
-    posStart,
-    posEnd,
-  );
-  const chartOption = new ChartOption(tdTable, dataTableFiltered);
-  chart.setOption(chartOption.get_option());
-  return '';
+const rerenderPlot = (currentPosition='') => {
+  const status = cnaPlot.rerenderPlot(currentPosition);
+  return status;
 };
 ```
 
 ```js
 dataTable.value = await csvfile.csv({ typed: false });
 dataTable.value = parser.parseData(dataTable.value);
+cnaPlot.updateDataTable(dataTable.value);
 positionInput.value = '';
-chartRenderer('');
+rerenderPlot();
 ```
 
 <div class="card chr-input">
   <div>Chromosome position: ${positionInput}</div>
-  <div class="error-msg">${chartRenderer(position)}</div>
+  <div class="error-msg">${rerenderPlot(position)}</div>
 </div>
 
 <section class="chart-section">
