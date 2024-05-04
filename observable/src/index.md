@@ -12,6 +12,7 @@ import CNAPlot from './cna_plot.js';
 import * as parser from './parser.js';
 
 const dataTable = Mutable([]);
+const formValues = Mutable([]);
 
 const ppForm = view(
   Inputs.form({
@@ -21,7 +22,6 @@ const ppForm = view(
       value: '0.83',
       pattern: '\\d+\\.*?\\d*?',
       required: true,
-      submit: true,
     }),
     ploidy: Inputs.text({
       label: 'Tumor ploidy',
@@ -29,7 +29,6 @@ const ppForm = view(
       value: '2',
       pattern: '\\d+\\.*?\\d*?',
       required: true,
-      submit: true,
     }),
     normal_ploidy: Inputs.text({
       label: 'Normal ploidy',
@@ -37,7 +36,6 @@ const ppForm = view(
       value: '2',
       pattern: '\\d+',
       required: true,
-      submit: true,
     }),
     copy_numbers: Inputs.text({
       label: 'Copy numbers',
@@ -45,7 +43,6 @@ const ppForm = view(
       value: '2,3,4',
       pattern: '(\\d+,?){1,}',
       required: true,
-      submit: true,
     }),
   }),
 );
@@ -57,8 +54,8 @@ const csvfile = view(
 
 ```js
 dataTable.value = await FileAttachment('data/cn_df.csv').csv(); // load sample data
-const args = parser.parseForm(ppForm);
-const tdTable = new CNATable(...args).table;
+formValues.value = parser.parseForm(ppForm);
+const tdTable = new CNATable(...formValues.value).table;
 display(tdTable); // для дебага пусть пока висит
 const cnaPlot = new CNAPlot('chart', tdTable, dataTable.value);
 ```

@@ -16,8 +16,8 @@
 .baf-title {
   position: absolute;
   left: 50%;
-  top: 5%;
-  transform: translate(-5%, -50%);
+  top: 0%;
+  transform: translate(-50%, -0%);
 }
 
 .dr-title {

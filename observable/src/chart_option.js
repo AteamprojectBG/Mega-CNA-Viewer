@@ -22,7 +22,7 @@ class ChartOption {
      * Returns list of BAF y axis positions and labels for line generation.
      * @returns {Array} - List of BAF y axis positions and labels.
      */
-    #buildUniqueBaf() {
+    #buildUniqueBaf = () => {
         const groupedBAF = Object.groupBy(this.tdTable, ({ BAF }) => BAF);
         const uniqueBAF = Object.keys(groupedBAF).map(item => {
             return {
@@ -32,13 +32,13 @@ class ChartOption {
         });
 
         return uniqueBAF;
-    }
+    };
 
     /**
      * Returns list of DR y axis positions and labels for line generation.
      * @returns {Array} - List of DR y axis positions and labels.
      */
-    #buildUniqueDr() {
+    #buildUniqueDr = () => {
         const uniqueTotal = [...new Set(this.tdTable.map(row => row.total))];
         const uniqueDR = [...new Set(this.tdTable.map(row => row.DR))].map((item, index) => {
             return {
@@ -48,14 +48,14 @@ class ChartOption {
         });
 
         return uniqueDR;
-    }
+    };
 
     /**
      * Returns markLine object.
      * @param {Array} itemList - List of y axis positions and labels.
      * @returns {Object} - Object of horizontal and vertical lines.
      */
-    #generateLines(itemList) {
+    #generateLines = (itemList) => {
         const horizontalLines = itemList.map((item, index) => {
             return {
                 yAxis: item.yValue,
@@ -98,13 +98,13 @@ class ChartOption {
                 }
             },
         }
-    }
+    };
 
     /**
      * Returns generated chart option.
      * @returns {object} - Chart option.
      */
-    getOption() {
+    getOption = () => {
         return {
             legend: {},
             // brush: {
@@ -141,20 +141,20 @@ class ChartOption {
                     type: 'value',
                     gridIndex: 0,
                     axisLabel: {
-                        show: false,
-                    },
-                    axisTick: {
-                        show: false,
+                        formatter: (value) => {
+                            const index = value ? value - 1 : value;
+                            return this.dataTable[index]?.pos;
+                        }
                     },
                 },
                 {
                     type: 'value',
                     gridIndex: 1,
                     axisLabel: {
-                        show: false,
-                    },
-                    axisTick: {
-                        show: false,
+                        formatter: (value) => {
+                            const index = value ? value - 1 : value;
+                            return this.dataTable[index]?.pos;
+                        }
                     },
                 }
             ],
@@ -192,7 +192,7 @@ class ChartOption {
                 },
             ],
         }
-    }
+    };
 }
 
 export default ChartOption;
