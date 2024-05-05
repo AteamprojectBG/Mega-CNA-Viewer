@@ -38,3 +38,14 @@
   color: red;
   justify-self: end;
 }
+
+.export {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 5px;
+}
+
+#export-btn {
+  width: 100px;
+  height: 25px;
+}

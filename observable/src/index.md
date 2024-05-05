@@ -5,6 +5,7 @@ toc: false
 ---
 
 <link rel="stylesheet" href="./style.css">
+<link href="https://unpkg.com/tabulator-tables@6.2.1/dist/css/tabulator.min.css" rel="stylesheet">
 
 ```js
 import CNATable from './cna_table.js';
@@ -13,6 +14,7 @@ import * as parser from './parser.js';
 
 const dataTable = Mutable([]);
 const formValues = Mutable([]);
+const selectedSegmentPoitions = Mutable({});
 
 const ppForm = view(
   Inputs.form({
@@ -57,7 +59,7 @@ dataTable.value = await FileAttachment('data/cn_df.csv').csv(); // load sample d
 formValues.value = parser.parseForm(ppForm);
 const tdTable = new CNATable(...formValues.value).table;
 display(tdTable); // для дебага пусть пока висит
-const cnaPlot = new CNAPlot('chart', tdTable, dataTable.value);
+const cnaPlot = new CNAPlot('chart', 'table', tdTable, dataTable.value);
 ```
 
 ```js
@@ -68,6 +70,11 @@ const rerenderPlot = (currentPosition='') => {
   const status = cnaPlot.rerenderPlot(currentPosition);
   return status;
 };
+
+const selected = Generators.input(selectedSegmentPoitions.value);
+const changeHandler = (v) => {
+  return v;
+}
 ```
 
 ```js
@@ -76,6 +83,10 @@ dataTable.value = parser.parseData(dataTable.value);
 cnaPlot.updateDataTable(dataTable.value);
 positionInput.value = '';
 rerenderPlot();
+```
+
+```js
+document.getElementById('export-btn').addEventListener('click', () => cnaPlot.exportData());
 ```
 
 <div class="card chr-input">
@@ -87,4 +98,11 @@ rerenderPlot();
   <div class="baf-title">BAF</div>
   <div class="dr-title">DR</div>
   <div id="chart"></div>
+</section>
+
+<section>
+  <div id="table"></div>
+  <div class="export">
+    <button id="export-btn">Export</button>
+  </div>
 </section>
