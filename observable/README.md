@@ -13,3 +13,9 @@ Manual run using Node.js:
 2) Move to observable/ folder
 3) npm i
 3) npm run dev
+
+To install new package from container:
+1) Enter to container in interactive mode:
+    docker exec -it mega-cna-viewer_observable_1 bash
+2) Install package.
+3) Restart container.

@@ -1,25 +1,32 @@
+/**
+ * @file Chart plot class.
+ */
+
 import * as echarts from 'npm:echarts';
 import ChartOption from './chart_option.js';
+import SegmentTable from './segment_table.js';
 
+/** Class creates a plot of BAF, DR and theoretical distribution. */
 class CNAPlot {
+    #pattern = /^chr([1-9XY]|1[0-9]|2[0-2])(:\d+:\d+|$)/g;
+
     /**
     * Chart plot constructor.
-    * @param {string} id - Chart id.
+    * @param {string} chartId - Chart chartId.
     * @param {Array} tdTable - Theoretical distribution.
     * @param {Array} dataTable - Loaded data.
     */
-    constructor(id, tdTable, dataTable) {
+    constructor(chartId, tableId, tdTable, dataTable) {
         this.tdTable = tdTable;
         this.dataTable = dataTable;
-        this.pattern = /^chr([1-9XY]|1[0-9]|2[0-2])(:\d+:\d+|$)/g;
-        const chartDom = document.getElementById(id);
+        
+        const chartDom = document.getElementById(chartId);
         this.chart = echarts.init(chartDom);
         window.addEventListener('resize', this.chart.resize);
         const chartOption = new ChartOption(tdTable, dataTable);
         this.chart.setOption(chartOption.getOption());
-        // this.chart.on('brushSelected', function(params){
-        //     console.log(params);
-        // });
+
+        this.segmentTable = new SegmentTable(tableId, this.chart, dataTable).table;
     }
 
     /**
@@ -45,7 +52,7 @@ class CNAPlot {
      * @returns {boolean} - Pattern matching status.
      */
     #validatePosition = (position) => {
-        if (!position.match(this.pattern)) {
+        if (!position.match(this.#pattern)) {
             return false;
         }
       
@@ -92,6 +99,17 @@ class CNAPlot {
         this.chart.setOption(chartOption.getOption());
         return '';
     };
+
+    /**
+     * Downloads selected segments.
+     */
+    exportData = () => {
+        if (!this.segmentTable.getDataCount()) {
+            return;
+        }
+
+        this.segmentTable.download('csv', 'segment-table.csv');
+    }
 }
 
 export default CNAPlot;

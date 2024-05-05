@@ -5,6 +5,7 @@ toc: false
 ---
 
 <link rel="stylesheet" href="./style.css">
+<link href="https://unpkg.com/tabulator-tables@6.2.1/dist/css/tabulator.min.css" rel="stylesheet">
 
 ```js
 import CNATable from './cna_table.js';
@@ -14,6 +15,7 @@ import * as parser from './parser.js';
 
 const dataTable = Mutable([]);
 const formValues = Mutable([]);
+const selectedSegmentPoitions = Mutable({});
 
 const ppForm = view(
   Inputs.form({
@@ -60,7 +62,7 @@ const tdTable = new CNATable(...formValues.value).table;
 const matcher = new Matcher(tdTable, 0.01)
 console.log(matcher)
 display(tdTable); // для дебага пусть пока висит
-const cnaPlot = new CNAPlot('chart', tdTable, dataTable.value);
+const cnaPlot = new CNAPlot('chart', 'table', tdTable, dataTable.value);
 ```
 
 ```js
@@ -82,6 +84,10 @@ positionInput.value = '';
 rerenderPlot();
 ```
 
+```js
+document.getElementById('export-btn').addEventListener('click', () => cnaPlot.exportData());
+```
+
 <div class="card chr-input">
   <div>Chromosome position: ${positionInput}</div>
   <div class="error-msg">${rerenderPlot(position)}</div>
@@ -91,4 +97,11 @@ rerenderPlot();
   <div class="baf-title">BAF</div>
   <div class="dr-title">DR</div>
   <div id="chart"></div>
+</section>
+
+<section>
+  <div id="table"></div>
+  <div class="export">
+    <button id="export-btn">Export</button>
+  </div>
 </section>

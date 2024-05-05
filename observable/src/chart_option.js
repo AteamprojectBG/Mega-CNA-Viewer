@@ -102,15 +102,15 @@ class ChartOption {
 
     /**
      * Returns generated chart option.
-     * @returns {object} - Chart option.
+     * @returns {Object} - Chart option.
      */
     getOption = () => {
         return {
             legend: {},
-            // brush: {
-            //     toolbox: ['lineX'],
-            //     type: 'lineX',
-            // },
+            brush: {
+                toolbox: ['lineX', 'clear'],
+                type: 'lineX',
+            },
             tooltip: {
                 trigger: 'axis',
                 axisPointer: {
