@@ -4,8 +4,8 @@ title: CNA Viewer
 toc: false
 ---
 
-<link rel="stylesheet" href="./style.css">
-<link href="https://unpkg.com/tabulator-tables@6.2.1/dist/css/tabulator.min.css" rel="stylesheet">
+<link rel="stylesheet" href="./assets/style.css">
+<link rel="stylesheet" href="./assets/tabulator.min.css">
 
 ```js
 import CNATable from './cna_table.js';
@@ -99,7 +99,7 @@ document.getElementById('export-btn').addEventListener('click', () => cnaPlot.ex
   <div id="chart"></div>
 </section>
 
-<section>
+<section class="table-section">
   <div id="table"></div>
   <div class="export">
     <button id="export-btn">Export</button>

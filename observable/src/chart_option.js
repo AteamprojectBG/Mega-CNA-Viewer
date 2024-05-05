@@ -116,12 +116,12 @@ class ChartOption {
                 axisPointer: {
                     type: 'cross',
                     label: {
-                        formatter: (params) => { 
+                        formatter: (params) => {
                             if (params.axisDimension === 'x') {
-                                return this.dataTable[params.value].pos;
+                                return String(this.dataTable[params.value].pos);
                             }
 
-                            return params.value.toFixed(2);
+                            return String(params.value.toFixed(2));
                         },
                     }
                 },
@@ -139,7 +139,11 @@ class ChartOption {
 
                     const currentRow = this.dataTable[params[0].dataIndex];
 
-                    return `<div>${currentRow.chr}:${currentRow.pos}</div>${series}`;
+                    const closestMatch = `
+                        <div>BAF: ${currentRow.minor}/${currentRow.total}</div>
+                        <div>DR: ${currentRow.total}</div>
+                    `;
+                    return `<div>${currentRow.chr}:${currentRow.pos}</div>${series}${closestMatch}`;
                 },
             },
             axisPointer: {
