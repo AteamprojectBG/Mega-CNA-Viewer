@@ -1,49 +1,40 @@
 // @ts-check
 
 /**
- * @file Class representing a matcher object to match data to theoretical distribution.
+ * @file Function to match data to theoretical distribution based on the euclidean distance between two points.
  */
 
-/** Class representing a matcher object to match data to theoretical distribution. */
-class Matcher {
-    /**
-     * Creates a matcher object for a given theoretical distribution.
-     * @param {[object]} theoreticalDistribution - Array of theoretical distribution.
-     * @param {number} thresholdStep - Threshold step for a matcher
-     */
-    constructor(theoreticalDistribution, thresholdStep = 0.01) {
-        this.theoreticalDistribution = theoreticalDistribution;
-        this.thresholdStep = thresholdStep;
-    }
-
-    /**
-     * Mapping function. Returns the input record with closest match between the data and the theoretical distribution.
-     * @param {object} record - Input record containting BAF and DR values.
-     * @returns {object} - Record with added total and minor values.
-     */
-    findMatch(record) {
-        let total = null;
-        let minor = null;
-        let BAF = record["BAF"];
-        let DR = record["DR"];
-        let currentThreshold = 0.0;
-
-        while (!total) {
-            for (let tdRecord of this.theoreticalDistribution) {
-                let tdBAF = tdRecord["BAF"];
-                let tdDR = tdRecord["DR"];
-
-                if (Math.abs(BAF - tdBAF) <= currentThreshold && Math.abs(DR - tdDR) <= currentThreshold) {
-                    total = parseInt(tdRecord["total"]);
-                    minor = parseInt(tdRecord["minor"]);
-                    break;
-                }
-            }
-            currentThreshold += this.thresholdStep;
-        }
-
-        return {...record, total, minor};
-    }
+/**
+ * Returns the distance between two points having BAF and DR as coordinates.
+ * @param {object} record - Input record.
+ * @param {object} tdRecord - Theoretical distribution record.
+ * @returns {number} - Distance between 2 points.
+ */
+function calculateDistance(record, tdRecord) {
+    let dx = record['BAF'] - tdRecord['BAF'];
+    let dy = record['DR'] - tdRecord['DR'];
+    return Math.sqrt(dx * dx + dy * dy);
 }
 
-export default Matcher;
+/**
+ * Mapping function. Returns the input record with the nearest match between the data and the theoretical distribution.
+ * @param {object} record - Input record containting BAF and DR values.
+ * @param {Array} theoreticalDistribution - Theoretical distribution of BAFs and DRs.
+ * @returns {object} - Record with added total and minor values.
+ */
+function findMatch(record, theoreticalDistribution) {
+    let minDistance = Infinity;
+    let nearestTDRecord = null;
+
+    for (let tdRecord of theoreticalDistribution) {
+        let distance = calculateDistance(record, tdRecord);
+        if (distance < minDistance) {
+            minDistance = distance;
+            nearestTDRecord = tdRecord;
+        }
+    }
+
+    return {...record, total: nearestTDRecord.total, minor: nearestTDRecord.minor};
+}
+
+export default findMatch;

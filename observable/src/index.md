@@ -10,7 +10,7 @@ toc: false
 ```js
 import CNATable from './cna_table.js';
 import CNAPlot from './cna_plot.js';
-import Matcher from './matching.js';
+import findMatch from './matching.js';
 import * as parser from './parser.js';
 
 const dataTable = Mutable([]);
@@ -58,8 +58,6 @@ const csvfile = view(
 dataTable.value = await FileAttachment('data/cn_df.csv').csv(); // load sample data
 formValues.value = parser.parseForm(ppForm);
 const tdTable = new CNATable(...formValues.value).table;
-const matcher = new Matcher(tdTable, 0.01)
-console.log(matcher)
 display(tdTable); // для дебага пусть пока висит
 const cnaPlot = new CNAPlot('chart', 'table', tdTable, dataTable.value);
 ```
@@ -76,7 +74,7 @@ const rerenderPlot = (currentPosition='') => {
 
 ```js
 dataTable.value = await csvfile.csv({ typed: false });
-dataTable.value = parser.parseData(dataTable.value).map(matcher.findMatch.bind(matcher));
+dataTable.value = parser.parseData(dataTable.value).map(element => findMatch(element, tdTable));
 console.log(dataTable.value)
 cnaPlot.updateDataTable(dataTable.value);
 positionInput.value = '';
