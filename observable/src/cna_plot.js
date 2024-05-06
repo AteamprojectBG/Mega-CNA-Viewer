@@ -8,7 +8,7 @@ import SegmentTable from './segment_table.js';
 
 /** Class creates a plot of BAF, DR and theoretical distribution. */
 class CNAPlot {
-    #pattern = /^chr([1-9XY]|1[0-9]|2[0-2])(:\d+:\d+|$)/g;
+    #pattern = /^chr([1-9XY]|1[0-9]|2[0-2])(:\d+[-]\d+|$)/g;
 
     /**
     * Chart plot constructor.
@@ -36,14 +36,16 @@ class CNAPlot {
      * @param {number} posEnd - Segment end position index.
      * @returns {Array} - Filtered data.
      */
-    #getFilteredData = (chr, posStart, posEnd) => {
-        if (posStart && posEnd) {
+    #getFilteredData = (positionEntity) => {
+        if (positionEntity.posStart && positionEntity.posEnd) {
             return this.dataTable.filter(
-                (row) => row.chr === chr && +row.pos >= +posStart && +row.pos <= +posEnd,
+                (row) => row.chr === positionEntity.chr &&
+                +row.pos >= +positionEntity.posStart &&
+                +row.pos <= +positionEntity.posEnd
             );
         }
         
-        return this.dataTable.filter((row) => row.chr === chr);
+        return this.dataTable.filter((row) => row.chr === positionEntity.chr);
     };
 
     /**
@@ -82,18 +84,23 @@ class CNAPlot {
         if (!this.#validatePosition(position)) {
             return 'Invalid pattern';
         }
+
+        const positionEntity = { chr: '', posStart: null, posEnd: null, };
         
-        const [chr, posStart, posEnd] = position.split(':');
+        const [chr, positions] = position.split(':');
+        positionEntity.chr = chr;
         
-        if (posEnd - posStart < 0) {
+        if (positions) {
+            const [posStart, posEnd] = positions.split('-');
+            positionEntity.posStart = posStart;
+            positionEntity.posEnd = posEnd;
+        }
+        
+        if (positionEntity.posEnd - positionEntity.posStart < 0) {
             return 'The start position must be greater than the end position';
         }
         
-        const dataTableFiltered = this.#getFilteredData(
-            chr,
-            +posStart,
-            +posEnd,
-        );
+        const dataTableFiltered = this.#getFilteredData(positionEntity);
 
         const chartOption = new ChartOption(this.tdTable, dataTableFiltered);
         this.chart.setOption(chartOption.getOption());
