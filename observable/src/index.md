@@ -15,7 +15,6 @@ import * as parser from './parser.js';
 
 const dataTable = Mutable([]);
 const formValues = Mutable([]);
-const selectedSegmentPoitions = Mutable({});
 
 const ppForm = view(
   Inputs.form({

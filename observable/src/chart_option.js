@@ -118,7 +118,8 @@ class ChartOption {
                     label: {
                         formatter: (params) => {
                             if (params.axisDimension === 'x') {
-                                return String(this.dataTable[params.value].pos);
+                                const index = Math.round(params.value);
+                                return String(this.dataTable[index].pos);
                             }
 
                             return String(params.value.toFixed(2));
