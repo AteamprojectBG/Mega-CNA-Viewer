@@ -53,7 +53,8 @@ export function parseData(data){
         const BAF = parseFloat(row.BAF)
         const DR = parseFloat(row.DR)
     
-        if(isNaN(pos) || isNaN(BAF) || isNaN(DR)){
+        if(isNaN(pos)){ //|| isNaN(BAF) || isNaN(DR)
+            console.log(row)
             throw new Error(`Invalid numeric data at row ${idx}`);
         }
     

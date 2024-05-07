@@ -24,17 +24,30 @@ function calculateDistance(record, tdRecord) {
  */
 function findMatch(record, theoreticalDistribution) {
     let minDistance = Infinity;
-    let nearestTDRecord = null;
+    let total = null;
+    let minor = null;
 
+    if(isNaN(record.BAF) && isNaN(record.DR)) {
+        return {...record, total, minor};
+    }
+    
     for (let tdRecord of theoreticalDistribution) {
-        let distance = calculateDistance(record, tdRecord);
+        let distance = null;
+        if(isNaN(record.BAF)){
+            distance = Math.abs(record.DR - tdRecord.DR);
+        } else if(isNaN(record.DR)){
+            distance = Math.abs(record.BAF - tdRecord.BAF);
+        } else {
+            distance = calculateDistance(record, tdRecord);
+        }
         if (distance < minDistance) {
             minDistance = distance;
-            nearestTDRecord = tdRecord;
+            total = isNaN(record.DR) ? null : tdRecord.total;
+            minor = isNaN(record.BAF) ? null : tdRecord.minor;
         }
     }
 
-    return {...record, total: nearestTDRecord.total, minor: nearestTDRecord.minor};
+    return {...record, total, minor};
 }
 
 export default findMatch;
