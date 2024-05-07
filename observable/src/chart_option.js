@@ -141,8 +141,8 @@ class ChartOption {
                     const currentRow = this.dataTable[params[0].dataIndex];
 
                     const closestMatch = `
-                        <div>BAF: ${currentRow.minor}/${currentRow.total}</div>
-                        <div>DR: ${currentRow.total}</div>
+                        <div>Total: ${currentRow.total}</div>
+                        <div>Minor: ${currentRow.minor}</div>
                     `;
                     return `<div>${currentRow.chr}:${currentRow.pos}</div>${series}${closestMatch}`;
                 },
