@@ -95,10 +95,10 @@ if(inputFile.name.endsWith('.csv')){
   }
 
   if(cSplit[0] > 1 && cSplit.every((e, arr) => e === cSplit[0])){
-    console.log('CSV FOUND')
+    dataTable.value = await inputFile.csv({ typed: false });
   }
   if(tSplit[0] > 1 && tSplit.every((e, arr) => e === tSplit[0])){
-    console.log('TSV FOUND')
+    dataTable.value = await inputFile.tsv({ typed: false });
   }
 }
 
