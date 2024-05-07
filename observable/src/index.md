@@ -49,8 +49,8 @@ const ppForm = view(
   }),
 );
 
-const csvfile = view(
-  Inputs.file({ label: 'Load CSV file', accept: '.csv, .txt', required: true }),
+const inputFile = view(
+  Inputs.file({ label: 'Load a file', accept: '.csv, .tsv, .txt', required: true }),
 );
 ```
 
@@ -73,7 +73,40 @@ const rerenderPlot = (currentPosition='') => {
 ```
 
 ```js
-dataTable.value = await csvfile.csv({ typed: false });
+function countOccurrences(string, char) {
+    return string.split(char).length - 1;
+}
+
+if(inputFile.name.endsWith('.csv')){
+  dataTable.value = await inputFile.csv({ typed: false });
+} else if (inputFile.name.endsWith('.tsv')) {
+  dataTable.value = await inputFile.tsv({ typed: false });
+} else if (inputFile.name.endsWith('.txt')) {
+  console.log('TXT LOADED')
+  let t = await inputFile.text()
+  const lines = t.split('\n')
+  console.log(lines[1])
+  let cSplit = []
+  let tSplit = []
+  for(let line of lines){
+    if (line.length > 0){
+      cSplit.push(countOccurrences(line, ','))
+      tSplit.push(countOccurrences(line, '\t'))
+    }
+  }
+
+  console.log(cSplit.length, tSplit.length)
+  console.log(cSplit[0], tSplit[0])
+  console.log(cSplit.every((e, arr) => e === cSplit[0]))
+
+  if(cSplit[0] > 1 && cSplit.every((e, arr) => e === cSplit[0])){
+    console.log('CSV FOUND')
+  }
+  if(tSplit[0] > 1 && tSplit.every((e, arr) => e === tSplit[0])){
+    console.log('TSV FOUND')
+  }
+}
+
 dataTable.value = parser.parseData(dataTable.value).map(element => findMatch(element, tdTable));
 console.log(dataTable.value)
 cnaPlot.updateDataTable(dataTable.value);
