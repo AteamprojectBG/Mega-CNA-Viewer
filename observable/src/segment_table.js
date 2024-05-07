@@ -36,6 +36,7 @@ class SegmentTable {
      */
     constructor(tableId, chart, tdTable, dataTable) {
         this.tableId = tableId;
+        this.chart = chart;
         this.table = this.#createTable(tableId);
         
         chart.on('brushselected', (params) => {
@@ -144,6 +145,14 @@ class SegmentTable {
         const mean = this.#rowData[key];
         const std = Math.sqrt(data.map(x => (x - mean) ** 2).reduce((a, b) => a + b) / data.length);
         return std.toFixed(3);
+    };
+
+    /**
+     * Turns off chart events.
+     */
+    turnOffEvents = () => {
+        this.chart.off('brushselected');
+        this.chart.off('brushEnd');
     };
 }
 

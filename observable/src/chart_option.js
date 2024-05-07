@@ -10,8 +10,8 @@ class ChartOption {
      * @param {Array} dataTable - Loaded data.
      */
     constructor(tdTable, dataTable) {
-        this.tdTable = tdTable
-        this.dataTable = dataTable
+        this.tdTable = tdTable;
+        this.dataTable = dataTable;
         this.scatterBafData = dataTable.map((row, index) => [index, row.BAF]);
         this.scatterDrData = dataTable.map((row, index) => [index, row.DR]);
         this.bafLines = this.#generateLines(this.#buildUniqueBaf(this.tdTable));
@@ -80,7 +80,7 @@ class ChartOption {
                     show: true,
                 },
             };
-        })
+        });
 
         return {
             markLine: {

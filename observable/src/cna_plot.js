@@ -17,6 +17,8 @@ class CNAPlot {
     * @param {Array} dataTable - Loaded data.
     */
     constructor(chartId, tableId, tdTable, dataTable) {
+        this.chartId = chartId;
+        this.tableId = tableId;
         this.tdTable = tdTable;
         this.dataTable = dataTable;
         
@@ -26,7 +28,7 @@ class CNAPlot {
         const chartOption = new ChartOption(tdTable, dataTable);
         this.chart.setOption(chartOption.getOption());
 
-        this.segmentTable = new SegmentTable(tableId, this.chart, tdTable, dataTable).table;
+        this.segmentTable = new SegmentTable(tableId, this.chart, tdTable, dataTable);
     }
 
     /**
@@ -78,6 +80,8 @@ class CNAPlot {
         if (!position.length) {
             const chartOption = new ChartOption(this.tdTable, this.dataTable);
             this.chart.setOption(chartOption.getOption());
+            this.segmentTable.turnOffEvents();
+            this.segmentTable = new SegmentTable(this.tableId, this.chart, this.tdTable, this.dataTable);
             return '';
         }
         
@@ -111,12 +115,12 @@ class CNAPlot {
      * Downloads selected segments.
      */
     exportData = () => {
-        if (!this.segmentTable.getDataCount()) {
+        if (!this.segmentTable.table.getDataCount()) {
             return;
         }
 
-        this.segmentTable.download('csv', 'segment-table.csv');
-    }
+        this.segmentTable.table.download('csv', 'segment-table.csv');
+    };
 }
 
 export default CNAPlot;

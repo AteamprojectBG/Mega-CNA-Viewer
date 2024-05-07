@@ -103,6 +103,12 @@ if(inputFile.name.endsWith('.csv')){
 }
 
 dataTable.value = parser.parseData(dataTable.value).map(element => findMatch(element, tdTable));
+dataTable.value = dataTable.value.sort((a, b) => {
+  return a.chr.localeCompare(b.chr, undefined, {
+    numeric: true,
+    sensitivity: 'base'
+  });
+});
 console.log(dataTable.value)
 cnaPlot.updateDataTable(dataTable.value);
 positionInput.value = '';
