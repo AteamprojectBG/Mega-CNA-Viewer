@@ -85,7 +85,6 @@ if(inputFile.name.endsWith('.csv')){
   console.log('TXT LOADED')
   let t = await inputFile.text()
   const lines = t.split('\n')
-  console.log(lines[1])
   let cSplit = []
   let tSplit = []
   for(let line of lines){
@@ -94,10 +93,6 @@ if(inputFile.name.endsWith('.csv')){
       tSplit.push(countOccurrences(line, '\t'))
     }
   }
-
-  console.log(cSplit.length, tSplit.length)
-  console.log(cSplit[0], tSplit[0])
-  console.log(cSplit.every((e, arr) => e === cSplit[0]))
 
   if(cSplit[0] > 1 && cSplit.every((e, arr) => e === cSplit[0])){
     console.log('CSV FOUND')
