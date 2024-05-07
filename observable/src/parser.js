@@ -50,8 +50,8 @@ export function parseData(data){
         }
 
         const pos = parseInt(row.pos)
-        const BAF = parseFloat(row.BAF)
-        const DR = parseFloat(row.DR)
+        const BAF = isNaN(parseFloat(row.BAF)) ? null : parseFloat(row.BAF)
+        const DR = isNaN(parseFloat(row.DR)) ? null : parseFloat(row.DR)
     
         if(isNaN(pos)){ //|| isNaN(BAF) || isNaN(DR)
             console.log(row)

@@ -33,17 +33,17 @@ function findMatch(record, theoreticalDistribution) {
     
     for (let tdRecord of theoreticalDistribution) {
         let distance = null;
-        if(isNaN(record.BAF)){
+        if(record.BAF === null){
             distance = Math.abs(record.DR - tdRecord.DR);
-        } else if(isNaN(record.DR)){
+        } else if(record.DR === null){
             distance = Math.abs(record.BAF - tdRecord.BAF);
         } else {
             distance = calculateDistance(record, tdRecord);
         }
         if (distance < minDistance) {
             minDistance = distance;
-            total = isNaN(record.DR) ? null : tdRecord.total;
-            minor = isNaN(record.BAF) ? null : tdRecord.minor;
+            total = record.DR === null ? null : tdRecord.DR;
+            minor = record.BAF === null ? null : tdRecord.minor;
         }
     }
 
