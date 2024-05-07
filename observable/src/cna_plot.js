@@ -26,7 +26,7 @@ class CNAPlot {
         const chartOption = new ChartOption(tdTable, dataTable);
         this.chart.setOption(chartOption.getOption());
 
-        this.segmentTable = new SegmentTable(tableId, this.chart, dataTable).table;
+        this.segmentTable = new SegmentTable(tableId, this.chart, tdTable, dataTable).table;
     }
 
     /**

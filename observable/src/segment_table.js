@@ -3,6 +3,7 @@
  */
 
 import { TabulatorFull as Tabulator}  from 'tabulator-tables';
+import findMatch from './matching.js';
 
 /** Class creates a selected segment table with statistics. */
 class SegmentTable {
@@ -18,9 +19,13 @@ class SegmentTable {
         bafMean: null,
         bafMedian: null,
         bafStd: null,
+        bafCount: null,
         drMean: null,
         drMedian: null,
         drStd: null,
+        drCount: null,
+        total: null,
+        minor: null,
     };
 
     /**
@@ -29,7 +34,7 @@ class SegmentTable {
      * @param {Object} chart - Chart object.
      * @param {Array} dataTable - Loaded data.
      */
-    constructor(tableId, chart, dataTable) {
+    constructor(tableId, chart, tdTable, dataTable) {
         this.tableId = tableId;
         this.table = this.#createTable(tableId);
         
@@ -58,9 +63,15 @@ class SegmentTable {
             this.#rowData.bafMean = this.#calculateMean(bafData);
             this.#rowData.bafMedian = this.#calculateMedian(bafData);
             this.#rowData.bafStd = this.#calculateStd(bafData, 'bafMean');
+            this.#rowData.bafCount = bafData.length;
             this.#rowData.drMean = this.#calculateMean(drData);
             this.#rowData.drMedian = this.#calculateMedian(drData);
             this.#rowData.drStd = this.#calculateStd(drData, 'drMean');
+            this.#rowData.drCount = bafData.length;
+
+            const closestMatch = findMatch({ BAF: this.#rowData.bafMean, DR: this.#rowData.drMean }, tdTable);
+            this.#rowData.total = closestMatch.total;
+            this.#rowData.minor = closestMatch.minor;
 
             this.table.addRow({ ...this.#rowData });
         });
@@ -81,9 +92,13 @@ class SegmentTable {
                 { title: 'BAF mean', field: 'bafMean' },
                 { title: 'BAF median', field: 'bafMedian' },
                 { title: 'BAF std', field: 'bafStd' },
+                { title: 'BAF count', field: 'bafCount' },
                 { title: 'DR mean', field: 'drMean' },
                 { title: 'DR median', field: 'drMedian' },
                 { title: 'DR std', field: 'drStd' },
+                { title: 'DR count', field: 'drCount' },
+                { title: 'Total', field: 'total' },
+                { title: 'Minor', field: 'minor' },
                 { 
                     formatter: 'buttonCross',
                     width: 20,
@@ -104,7 +119,7 @@ class SegmentTable {
      */
     #calculateMean = (data) => {
         const mean = data.reduce((acc, cur) => acc + cur, 0) / data.length;
-        return mean;
+        return mean.toFixed(3);
     };
 
     /**
@@ -115,7 +130,8 @@ class SegmentTable {
     #calculateMedian = (data) => {
         const sortedData = [...data].toSorted((a, b) => a - b);
         const mid = Math.floor(sortedData.length / 2);
-        return sortedData.length % 2 ? sortedData[mid] : ((sortedData[mid - 1] + sortedData[mid]) / 2);
+        const median = sortedData.length % 2 ? sortedData[mid] : ((sortedData[mid - 1] + sortedData[mid]) / 2);
+        return median.toFixed(3);
     };
 
     /**
@@ -126,7 +142,8 @@ class SegmentTable {
      */
     #calculateStd = (data, key) => {
         const mean = this.#rowData[key];
-        return Math.sqrt(data.map(x => (x - mean) ** 2).reduce((a, b) => a + b) / data.length);
+        const std = Math.sqrt(data.map(x => (x - mean) ** 2).reduce((a, b) => a + b) / data.length);
+        return std.toFixed(3);
     };
 }
 
