@@ -112,9 +112,9 @@ const rerenderPlot = (currentPosition='') => {
 };
 ```
 
-<div class="grid grid-cols-2" style="grid-auto-rows: auto; grid-template-columns: 170px auto;">
-  <div class="card sidebar">
-    <div class='inputForm'>
+<div class="main-section">
+  <div class="sidebar card-item">
+    <div class="inputForm">
       <h3>Settings:</h3>
       <div><label for="purityInput">Purity</label>${purityInput}</div>
       <div><label for="tumorPloidyInput">Tumor ploidy</label>${tumorPloidyInput}</div>
@@ -129,17 +129,17 @@ const rerenderPlot = (currentPosition='') => {
       <div><label for="fileInput">Load data</label>${inputFile}</div>
     </div>
   </div>
-  <div class='display'>
-    <div class="card chr-input">
+  <div class="plot">
+    <div class="chr-input card-item">
       <div><label for="chrInput">Chromosome position:</label> ${positionInput}</div>
       <div class="error-msg">${rerenderPlot(position)}</div>
     </div>
-    <section class="chart-section">
+    <section class="chart-section card-item">
       <div class="baf-title">BAF</div>
       <div class="dr-title">DR</div>
-      <div id="chart"></div>
+      <div id="chart" class="chart"></div>
     </section>
-    <section class="table-section">
+    <section class="card-item">
       <div id="table"></div>
       <div class="export">
         <button id="export-btn">Export</button>
