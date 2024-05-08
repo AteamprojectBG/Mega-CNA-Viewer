@@ -42,7 +42,7 @@ function findMatch(record, theoreticalDistribution) {
         }
         if (distance < minDistance) {
             minDistance = distance;
-            total = record.DR === null ? null : tdRecord.DR;
+            total = record.DR === null ? null : tdRecord.total;
             minor = record.BAF === null ? null : tdRecord.minor;
         }
     }

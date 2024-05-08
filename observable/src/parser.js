@@ -49,7 +49,17 @@ export function parseData(data){
             throw new Error(`Wrong chr record at row ${idx}`);
         }
 
-        const pos = parseInt(row.pos)
+        let pos = null
+        let label = null
+        if(Object.hasOwn(row, 'pos')) {
+            pos = parseInt(row.pos) 
+        } else if(Object.hasOwn(row, 'start') && Object.hasOwn(row, 'end')) {
+            let start = parseInt(row.start)
+            let end = parseInt(row.end)
+            pos = start + ((end - start) / 2)
+            label = `${row.chr}:${start}-${end}`
+        }
+
         const BAF = isNaN(parseFloat(row.BAF)) ? null : parseFloat(row.BAF)
         const DR = isNaN(parseFloat(row.DR)) ? null : parseFloat(row.DR)
     
@@ -62,7 +72,8 @@ export function parseData(data){
             chr: row.chr,
             pos,
             BAF,
-            DR
+            DR,
+            label
         }
     })
   }
