@@ -59,7 +59,7 @@ if(inputFileGen.name.endsWith('.csv')){
 } else if (inputFileGen.name.endsWith('.tsv')) {
   dataTable.value = await inputFile.value.tsv({ typed: false });
 } else if (inputFileGen.name.endsWith('.txt')) {
-  let t = await inputFile.text()
+  let t = await inputFileGen.text()
   const lines = t.split('\n')
   let cSplit = []
   let tSplit = []
