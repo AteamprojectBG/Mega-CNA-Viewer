@@ -128,6 +128,10 @@ class ChartOption {
                 },
                 formatter: (params) => {
                     const series = params.map(item => {
+                        if (!item.data[1]) {
+                            return '';
+                        }
+
                         return `<div>
                         <div style="
                             display: inline-block;
@@ -139,12 +143,11 @@ class ChartOption {
                     }).join('');
 
                     const currentRow = this.dataTable[params[0].dataIndex];
+                    const position = currentRow.label || `${currentRow.chr}:${currentRow.pos}`;
 
-                    const closestMatch = `
-                        <div>Total: ${currentRow.total}</div>
-                        <div>Minor: ${currentRow.minor}</div>
-                    `;
-                    return `<div>${currentRow.chr}:${currentRow.pos}</div>${series}${closestMatch}`;
+                    return `<div>${position}</div>${series}`
+                        + (currentRow.total ? `<div>Total: ${currentRow.total}</div>` : '')
+                        + (currentRow.minor ? `<div>Minor: ${currentRow.minor}</div>` : '');
                 },
             },
             axisPointer: {
