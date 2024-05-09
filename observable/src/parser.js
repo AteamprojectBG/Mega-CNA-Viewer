@@ -18,22 +18,22 @@ export function parseForm(formData) {
 
     // Parse purity and ploidy
     let purity = parseFloat(formData.purity);
-    let ploidy = parseFloat(formData.ploidy);
-    let normalPloidy = parseInt(formData.normal_ploidy);
+    let tumorPloidy = parseFloat(formData.tumorPloidy);
+    let normalPloidy = parseInt(formData.normalPloidy);
 
-    if (isNaN(purity) || isNaN(ploidy) || isNaN(normalPloidy)) {
-        throw new Error('Invalid numeic data');
+    if (isNaN(purity) || isNaN(tumorPloidy) || isNaN(normalPloidy)) {
+        throw new Error('Invalid numeric data');
     }
 
     // Parse copy_numbers
-    let copyNumbers = formData.copy_numbers.split(',')
+    let copyNumbers = formData.copyNumbers.split(',')
                         .map(num => parseFloat(num.trim()))
                         .filter(num => !isNaN(num));
 
     if (copyNumbers.length === 0) {
         throw new Error('No valid copy numbers found');
     }
-    return [purity, ploidy, copyNumbers, normalPloidy];
+    return [purity, tumorPloidy, copyNumbers, normalPloidy];
 
 }
 

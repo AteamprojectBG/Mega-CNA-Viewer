@@ -16,60 +16,37 @@ import * as parser from './parser.js';
 const dataTable = Mutable([]);
 const formValues = Mutable([]);
 
-const ppForm = view(
-  Inputs.form({
-    purity: Inputs.text({
-      label: 'Purity',
-      placeholder: 'Enter purity',
-      value: '0.83',
-      pattern: '\\d+\\.*?\\d*?',
-      required: true,
-    }),
-    ploidy: Inputs.text({
-      label: 'Tumor ploidy',
-      placeholder: 'Enter tumor ploidy',
-      value: '2',
-      pattern: '\\d+\\.*?\\d*?',
-      required: true,
-    }),
-    normal_ploidy: Inputs.text({
-      label: 'Normal ploidy',
-      placeholder: 'Enter normal ploidy',
-      value: '2',
-      pattern: '\\d+',
-      required: true,
-    }),
-    copy_numbers: Inputs.text({
-      label: 'Copy numbers',
-      placeholder: 'Enter numbers of copies',
-      value: '2,3,4',
-      pattern: '(\\d+,?){1,}',
-      required: true,
-    }),
-  }),
-);
+const initialValues = {
+    purity: 0.83,
+    tumorPloidy: 3,
+    normalPloidy: 2,
+    copyNumbers: "2,3,4",
+  }
 
-const inputFile = view(
-  Inputs.file({ label: 'Load a file', accept: '.csv, .tsv, .txt', required: true }),
-);
+const purityInput = html`<input id="purityInput" type="number" placeholder="Enter purity" value="${initialValues.purity}" min="0" required/>`
+
+const tumorPloidyInput = html`<input id="tumorPloidyInput" type="number" placeholder="Enter tumor ploidy" value="${initialValues.tumorPloidy}" min="0" required/>`
+
+const normalPloidyInput = html`<input id="normalPloidyInput" type="number" placeholder="Enter normal ploidy" value="${initialValues.normalPloidy}" min="0" required/>`
+
+const copyNumbersInput = html`<input id="copyNumbersInput" type="text" placeholder="Enter copy numbers" value="${initialValues.copyNumbers}" pattern="(\d+,?){1,}" title="List numbers separated by commas" required/>`
+
+// const inputFile = html`<input id="fileInput" type="file" accept=".csv, .tsv, .txt" required/>`
+const inputFile = Inputs.file({
+  accept: '.csv, .tsv, .txt',
+  required: true,
+})
+inputFile.querySelector('input').setAttribute('id', 'fileInput')
+
+const purityGen = Generators.input(purityInput);
+const tumorPloidyGen = Generators.input(tumorPloidyInput);
+const normalPloidyGen = Generators.input(normalPloidyInput);
+const copyNumbersGen = Generators.input(copyNumbersInput);
+const inputFileGen = Generators.input(inputFile)
 ```
 
 ```js
-dataTable.value = await FileAttachment('data/cn_df.csv').csv(); // load sample data
-formValues.value = parser.parseForm(ppForm);
-const tdTable = new CNATable(...formValues.value).table;
-display(tdTable); // для дебага пусть пока висит
-const cnaPlot = new CNAPlot('chart', 'table', tdTable, dataTable.value);
-```
-
-```js
-const positionInput = html`<input type="text" placeholder="chrN:0000-0000" />`;
-const position = Generators.input(positionInput);
-
-const rerenderPlot = (currentPosition='') => {
-  const status = cnaPlot.rerenderPlot(currentPosition);
-  return status;
-};
+document.getElementById('export-btn').addEventListener('click', () => cnaPlot.exportData());
 ```
 
 ```js
@@ -77,13 +54,12 @@ function countOccurrences(string, char) {
     return string.split(char).length - 1;
 }
 
-if(inputFile.name.endsWith('.csv')){
-  dataTable.value = await inputFile.csv({ typed: false });
-} else if (inputFile.name.endsWith('.tsv')) {
-  dataTable.value = await inputFile.tsv({ typed: false });
-} else if (inputFile.name.endsWith('.txt')) {
-  console.log('TXT LOADED')
-  let t = await inputFile.text()
+if(inputFileGen.name.endsWith('.csv')){
+  dataTable.value = await inputFile.value.csv({ typed: false });
+} else if (inputFileGen.name.endsWith('.tsv')) {
+  dataTable.value = await inputFile.value.tsv({ typed: false });
+} else if (inputFileGen.name.endsWith('.txt')) {
+  let t = await inputFileGen.text()
   const lines = t.split('\n')
   let cSplit = []
   let tSplit = []
@@ -95,10 +71,10 @@ if(inputFile.name.endsWith('.csv')){
   }
 
   if(cSplit[0] > 1 && cSplit.every((e, arr) => e === cSplit[0])){
-    dataTable.value = await inputFile.csv({ typed: false });
+    dataTable.value = await inputFile.value.csv({ typed: false });
   }
   if(tSplit[0] > 1 && tSplit.every((e, arr) => e === tSplit[0])){
-    dataTable.value = await inputFile.tsv({ typed: false });
+    dataTable.value = await inputFile.value.tsv({ typed: false });
   }
 }
 
@@ -109,30 +85,70 @@ dataTable.value = dataTable.value.sort((a, b) => {
     sensitivity: 'base'
   });
 });
-console.log(dataTable.value)
 cnaPlot.updateDataTable(dataTable.value);
 positionInput.value = '';
 rerenderPlot();
 ```
 
 ```js
-document.getElementById('export-btn').addEventListener('click', () => cnaPlot.exportData());
+  const formData = {
+    purity: isNaN(purityGen) ? '0' : purityGen,
+    tumorPloidy: isNaN(tumorPloidyGen) ? '0' : tumorPloidyGen,
+    normalPloidy: isNaN(normalPloidyGen) ? '0' : normalPloidyGen,
+    copyNumbers: copyNumbersGen === '' ? '0' : copyNumbersGen,
+  }
+
+  formValues.value = parser.parseForm(formData);
+  dataTable.value = await FileAttachment('data/cn_df.csv').csv(); // load sample data
+  const tdTable = new CNATable(...formValues.value).table;
+  console.log('tdTable')
+  console.log(tdTable); // для дебага пусть пока висит
+  const cnaPlot = new CNAPlot('chart', 'table', tdTable, dataTable.value);
 ```
 
-<div class="card chr-input">
-  <div>Chromosome position: ${positionInput}</div>
-  <div class="error-msg">${rerenderPlot(position)}</div>
-</div>
+```js
+const positionInput = html`<input id="chrInput" type="text" placeholder="chrN:0000-0000" />`;
+const position = Generators.input(positionInput);
 
-<section class="chart-section">
-  <div class="baf-title">BAF</div>
-  <div class="dr-title">DR</div>
-  <div id="chart"></div>
-</section>
+const rerenderPlot = (currentPosition='') => {
+  const status = cnaPlot.rerenderPlot(currentPosition);
+  return status;
+};
+```
 
-<section class="table-section">
-  <div id="table"></div>
-  <div class="export">
-    <button id="export-btn">Export</button>
+<div class="main-section">
+  <div class="sidebar card-item">
+    <div class="inputForm">
+      <h3>Settings:</h3>
+      <div><label for="purityInput">Purity</label>${purityInput}</div>
+      <div><label for="tumorPloidyInput">Tumor ploidy</label>${tumorPloidyInput}</div>
+      <div><label for="normalPloidyInput">Normal ploidy</label>${normalPloidyInput}</div>
+      <div><label for="copyNumbersInput">Copy numbers</label>
+      ${copyNumbersInput}
+      <div class="error-msg">Invalid pattern</div>
+      </div>
+    </div>
+    <div class="inputForm">
+      <h3>Data:</h3>
+      <div>${inputFile}<label for="fileInput">Load data</label></div>
+      <div id="filename">${inputFileGen.name}</div>
+    </div>
   </div>
-</section>
+  <div class="plot">
+    <div class="chr-input card-item">
+      <div><label for="chrInput">Chromosome position:</label> ${positionInput}</div>
+      <div class="error-msg">${rerenderPlot(position)}</div>
+    </div>
+    <section class="chart-section card-item">
+      <div class="baf-title">BAF</div>
+      <div class="dr-title">DR</div>
+      <div id="chart" class="chart"></div>
+    </section>
+    <section class="card-item">
+      <div id="table"></div>
+      <div class="export">
+        <button id="export-btn">Export</button>
+      </div>
+    </section>
+  </div>
+</div>
