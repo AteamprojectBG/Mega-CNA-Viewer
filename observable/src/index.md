@@ -36,6 +36,7 @@ const inputFile = Inputs.file({
   accept: '.csv, .tsv, .txt',
   required: true,
 })
+inputFile.querySelector('input').setAttribute('id', 'fileInput')
 
 const purityGen = Generators.input(purityInput);
 const tumorPloidyGen = Generators.input(tumorPloidyInput);
@@ -58,7 +59,6 @@ if(inputFileGen.name.endsWith('.csv')){
 } else if (inputFileGen.name.endsWith('.tsv')) {
   dataTable.value = await inputFile.value.tsv({ typed: false });
 } else if (inputFileGen.name.endsWith('.txt')) {
-  console.log('TXT LOADED')
   let t = await inputFile.text()
   const lines = t.split('\n')
   let cSplit = []
@@ -126,7 +126,8 @@ const rerenderPlot = (currentPosition='') => {
     </div>
     <div class="inputForm">
       <h3>Data:</h3>
-      <div><label for="fileInput">Load data</label>${inputFile}</div>
+      <div>${inputFile}<label for="fileInput">Load data</label></div>
+      <div id="filename">${inputFileGen.name}</div>
     </div>
   </div>
   <div class="plot">

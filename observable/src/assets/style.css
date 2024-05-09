@@ -1,3 +1,9 @@
+:root{
+  --font-family: 'Roboto', sans-serif;
+  --button-normal: rgb(142, 162, 198);
+  --button-hover: rgb(0, 174, 255);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -8,16 +14,34 @@
 }
 
 .main-section {
+  font: 14px var(--font-family);
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 200px repeat(3, 1fr);
   gap: 20px;
 }
+
+.main-section input[type="text"],
+.main-section input[type="number"] {
+  box-sizing: border-box;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+
 
 .sidebar{
   display: flex;
   flex-direction: column;
   gap: 50px;
 }
+
+.sidebar input[type="text"],
+.sidebar input[type="number"] {
+  margin-top: 0.2rem;
+}
+
 
 .inputForm {
   display: grid;
@@ -32,10 +56,6 @@
   display: none;
 }
 
-.sidebar .inputForm form {
-  width: 100% !important;
-}
-
 .sidebar .inputForm input {
   width: 100%;
 }
@@ -47,6 +67,54 @@
 
 .sidebar .inputForm span:has(input[type="text"]:invalid) ~ .error-msg {
   display: block;
+}
+
+.sidebar .inputForm form:has(input[type="file"]),
+.sidebar .inputForm input[type="file"] {
+  width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute !important;
+	z-index: -1;
+}
+
+.sidebar .inputForm:has(input[type="file"]) label{
+  display: inline-flex;
+  gap: 5px;
+  position: relative;
+  padding: 5px;
+  box-sizing: border-box;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  background-color: var(--button-normal);
+  color: white;
+  transition: all 0.3s;
+}
+
+.sidebar .inputForm:has(input[type="file"]) label::before{
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-image: url(./dna_icon.svg);
+  background-size: cover;
+}
+
+.sidebar .inputForm:has(input[type="file"]:focus) label,
+.sidebar .inputForm:has(input[type="file"]) label:hover {
+  background-color: var(--button-hover);
+  cursor: pointer;
+}
+
+.sidebar .inputForm:has(input[type="file"]:focus) label{
+  outline: 1px dotted #bbb;
+}
+
+.sidebar .inputForm #filename span::before{
+  visibility: hidden;
 }
 
 .plot {
@@ -105,8 +173,34 @@
 }
 
 #export-btn {
+  margin-top: 10px;
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
   width: 100px;
-  height: 25px;
+  padding: 5px;
+  background-color: var(--button-normal);
+  color: white;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+#export-btn:hover,
+#export-btn:focus {
+  background-color: var(--button-hover);
+}
+
+#export-btn::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-image: url(./export_icon.svg);
+  background-size: cover;
 }
 
 .card-item {
