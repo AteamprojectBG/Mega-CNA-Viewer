@@ -145,7 +145,9 @@ class ChartOption {
                     const currentRow = this.dataTable[params[0].dataIndex];
                     const position = currentRow.label || `${currentRow.chr}:${currentRow.pos}`;
 
-                    return `<div>${position}</div>${series}`
+                    return `<div>${position}</div>`
+                        + (!currentRow.label && currentRow.geneName ? `<div>Gene name: ${currentRow.geneName}</div>` : '')
+                        + series
                         + (currentRow.total ? `<div>Total: ${currentRow.total}</div>` : '')
                         + (currentRow.minor ? `<div>Minor: ${currentRow.minor}</div>` : '');
                 },

@@ -8,9 +8,14 @@ toc: false
 <link rel="stylesheet" href="./assets/tabulator.min.css">
 
 ```js
+const annotation = await FileAttachment("./data/ann.tsv").tsv({typed: true, array: true,});
+```
+
+```js
 import CNATable from './cna_table.js';
 import CNAPlot from './cna_plot.js';
 import findMatch from './matching.js';
+import annotate from './annotation.js';
 import * as parser from './parser.js';
 
 const dataTable = Mutable([]);
@@ -79,12 +84,15 @@ if(inputFileGen.name.endsWith('.csv')){
 }
 
 dataTable.value = parser.parseData(dataTable.value).map(element => findMatch(element, tdTable));
+annotate(dataTable.value, annotation)
 dataTable.value = dataTable.value.sort((a, b) => {
   return a.chr.localeCompare(b.chr, undefined, {
     numeric: true,
     sensitivity: 'base'
   });
 });
+console.log("DATA:")
+console.log(dataTable.value)
 cnaPlot.updateDataTable(dataTable.value);
 positionInput.value = '';
 rerenderPlot();
@@ -100,8 +108,9 @@ rerenderPlot();
 
   formValues.value = parser.parseForm(formData);
   dataTable.value = await FileAttachment('data/cn_df.csv').csv(); // load sample data
+  annotate(dataTable.value, annotation);
   const tdTable = new CNATable(...formValues.value).table;
-  console.log('tdTable')
+  console.log(dataTable.value);
   console.log(tdTable); // для дебага пусть пока висит
   const cnaPlot = new CNAPlot('chart', 'table', tdTable, dataTable.value);
 ```

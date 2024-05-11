@@ -45,7 +45,7 @@ export function parseForm(formData) {
  */
 export function parseData(data){
     return data.map((row, idx) => {
-        if(row.chr.len < 4) {
+        if(row.chr.length < 4) {
             throw new Error(`Wrong chr record at row ${idx}`);
         }
 
