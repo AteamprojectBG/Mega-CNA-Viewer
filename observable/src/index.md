@@ -5,7 +5,7 @@ toc: false
 ---
 
 <link rel="stylesheet" href="./assets/style.css">
-<link rel="stylesheet" href="./assets/tabulator.min.css">
+<link rel="stylesheet" href="./assets/tabulator_bulma.min.css">
 
 ```js
 const annotation = await FileAttachment("./data/ann.tsv").tsv({typed: true, array: true,});
@@ -17,7 +17,6 @@ import findMatch from './utils/matching.js';
 import annotate from './utils/annotation.js';
 import * as parser from './utils/parser.js';
 import CNAPlot from './plot/index.js';
-// import * as CNAPlot from './plot';
 
 const dataTable = Mutable([]);
 const formValues = Mutable([]);
@@ -138,6 +137,10 @@ const rerenderPlot = (currentPosition='') => {
       <div class="error-msg">Invalid pattern</div>
       </div>
     </div>
+    <div class="chr-input">
+      <div><label for="chrInput">Chromosome position</label> ${positionInput}</div>
+      <div class="error-msg">${rerenderPlot(position)}</div>
+    </div>
     <div class="inputForm">
       <h3>Data:</h3>
       <div>${inputFile}<label for="fileInput">Load data</label></div>
@@ -145,10 +148,6 @@ const rerenderPlot = (currentPosition='') => {
     </div>
   </div>
   <div class="plot">
-    <div class="chr-input card-item">
-      <div><label for="chrInput">Chromosome position:</label> ${positionInput}</div>
-      <div class="error-msg">${rerenderPlot(position)}</div>
-    </div>
     <section class="chart-section card-item">
       <div class="baf-title">BAF</div>
       <div class="dr-title">DR</div>

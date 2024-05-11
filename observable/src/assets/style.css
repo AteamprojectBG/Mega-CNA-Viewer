@@ -17,7 +17,7 @@
   font: 14px var(--font-family);
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-columns: 200px repeat(3, 1fr);
+  grid-template-columns: 250px repeat(3, 1fr);
   gap: 20px;
 }
 
@@ -29,8 +29,6 @@
   border: 1px solid #ccc;
 }
 
-
-
 .sidebar{
   display: flex;
   flex-direction: column;
@@ -41,7 +39,6 @@
 .sidebar input[type="number"] {
   margin-top: 0.2rem;
 }
-
 
 .inputForm {
   display: grid;
@@ -126,7 +123,7 @@
 
 .chart {
   position: relative;
-  height: 80vh;
+  height: 75vh;
   overflow: hidden;
 }
 
@@ -149,11 +146,14 @@
 }
 
 .chr-input {
+  width: 100%;
   display: grid;
   gap: 0.5rem;
-  justify-content: center;
-  align-items: center;
-  margin-top: 0;
+}
+
+.chr-input input {
+  display: block;
+  width: 100%;
 }
 
 .error-msg {
@@ -170,6 +170,11 @@
 
 .table-section {
   padding-top: 20px;
+}
+
+#table{
+  border-radius: 10px;
+  width: 100%;
 }
 
 #export-btn {
@@ -208,6 +213,14 @@
   border: solid 1px var(--theme-foreground-faintest);
   border-radius: 0.75rem;
   padding: 1rem;
+}
+
+.tabulator .tabulator-header .tabulator-frozen.tabulator-frozen-right {
+  background-color: white;
+}
+
+.tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-right {
+  background-color: white;
 }
 
 @media (max-width: 1024px) {

@@ -84,10 +84,10 @@ class SegmentTable {
      */
     #createTable = () => {
         return new Tabulator(`#${this.tableId}`, {
-            layout:'fitColumns',
+            layout:'fitDataTable',
             maxHeight: '400px',
             columns:[
-                { title: 'Chromosome', field: 'chr' },
+                { title: 'Chromosome', field: 'chr', },
                 { title: 'Start position', field: 'posStart' },
                 { title: 'End position', field: 'posEnd' },
                 { title: 'BAF mean', field: 'bafMean' },
@@ -100,7 +100,7 @@ class SegmentTable {
                 { title: 'DR count', field: 'drCount' },
                 { title: 'Total', field: 'total' },
                 { title: 'Minor', field: 'minor' },
-                { 
+                {
                     formatter: 'buttonCross',
                     width: 20,
                     hozAlign: 'center',
@@ -108,6 +108,7 @@ class SegmentTable {
                         cell.getRow().delete();
                     },
                     headerSort: false,
+                    frozen: true,
                 }
             ],
         });
