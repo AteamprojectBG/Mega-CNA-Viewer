@@ -12,11 +12,12 @@ const annotation = await FileAttachment("./data/ann.tsv").tsv({typed: true, arra
 ```
 
 ```js
-import CNATable from './cna_table.js';
-import CNAPlot from './cna_plot.js';
-import findMatch from './matching.js';
-import annotate from './annotation.js';
-import * as parser from './parser.js';
+import CNATable from './utils/cna_table.js';
+import findMatch from './utils/matching.js';
+import annotate from './utils/annotation.js';
+import * as parser from './utils/parser.js';
+import CNAPlot from './plot/index.js';
+// import * as CNAPlot from './plot';
 
 const dataTable = Mutable([]);
 const formValues = Mutable([]);

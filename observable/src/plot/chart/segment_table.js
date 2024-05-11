@@ -3,7 +3,7 @@
  */
 
 import { TabulatorFull as Tabulator}  from 'tabulator-tables';
-import findMatch from './matching.js';
+import findMatch from '../../utils/matching.js';
 
 /** Class creates a selected segment table with statistics. */
 class SegmentTable {
