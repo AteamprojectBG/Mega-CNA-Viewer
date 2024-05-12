@@ -21,18 +21,20 @@
   gap: 20px;
 }
 
+.main-section .sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .main-section input[type="text"],
 .main-section input[type="number"] {
+  font: 14px var(--font-family);
   box-sizing: border-box;
   padding: 5px;
   border-radius: 5px;
   border: 1px solid #ccc;
-}
-
-.sidebar{
-  display: flex;
-  flex-direction: column;
-  gap: 50px;
+  margin-top: 0.2rem;
 }
 
 .sidebar input[type="text"],
@@ -50,20 +52,22 @@
 }
 
 .sidebar .inputForm .error-msg {
-  display: none;
+  visibility: hidden;
 }
 
 .sidebar .inputForm input {
   width: 100%;
 }
 
-.sidebar .inputForm input[type="text"]:invalid {
+.sidebar .inputForm input[type="text"]:invalid,
+.sidebar .chr-input:has(.error-msg span:not(:empty)) input[type="text"] {
   background-color: red;
   color: white;
 }
 
-.sidebar .inputForm span:has(input[type="text"]:invalid) ~ .error-msg {
-  display: block;
+.sidebar .inputForm span:has(input[type="text"]:invalid) ~ .error-msg,
+.sidebar .inputForm.chr-input .error-msg:not(:empty) {
+  visibility: visible;
 }
 
 .sidebar .inputForm form:has(input[type="file"]),
@@ -145,19 +149,7 @@
   transform: translate(-50%, -50%);
 }
 
-.chr-input {
-  width: 100%;
-  display: grid;
-  gap: 0.5rem;
-}
-
-.chr-input input {
-  display: block;
-  width: 100%;
-}
-
 .error-msg {
-  justify-self: end;
   color: red;
   height: 15px;
 }

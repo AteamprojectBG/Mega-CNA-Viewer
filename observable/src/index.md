@@ -137,9 +137,12 @@ const rerenderPlot = (currentPosition='') => {
       <div class="error-msg">Invalid pattern</div>
       </div>
     </div>
-    <div class="chr-input">
-      <div><label for="chrInput">Chromosome position</label> ${positionInput}</div>
+    <div class="chr-input inputForm">
+      <h3>Search:</h3>
+      <div><label for="chrInput">Chromosome position</label>
+      ${positionInput}
       <div class="error-msg">${rerenderPlot(position)}</div>
+      </div>
     </div>
     <div class="inputForm">
       <h3>Data:</h3>
