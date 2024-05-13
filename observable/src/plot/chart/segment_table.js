@@ -87,9 +87,9 @@ class SegmentTable {
             layout:'fitDataTable',
             maxHeight: '400px',
             columns:[
-                { title: 'Chromosome', field: 'chr', },
-                { title: 'Start position', field: 'posStart' },
-                { title: 'End position', field: 'posEnd' },
+                { title: 'Chr', field: 'chr', },
+                { title: 'Start', field: 'posStart' },
+                { title: 'End', field: 'posEnd' },
                 { title: 'BAF mean', field: 'bafMean' },
                 { title: 'BAF median', field: 'bafMedian' },
                 { title: 'BAF std', field: 'bafStd' },
