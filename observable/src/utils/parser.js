@@ -7,7 +7,7 @@
 /**
  * Parses web form data, validates it and returns them as array.
  * @param {object} formData - Web form data.
- * @returns {(Array)} Parsed purity, ploidy, copy_numbers, normalPloidy.
+ * @returns {Array} Parsed purity, ploidy, copy_numbers, normalPloidy.
  * @throws {Error} Invalid form data.
  */
 export function parseForm(formData) {

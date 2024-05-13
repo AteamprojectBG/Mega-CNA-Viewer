@@ -1,3 +1,14 @@
+// @ts-check
+
+/**
+ * @file User data annotation function.
+ */
+
+/**
+ * Mutates input data adding "geneName" property.
+ * @param {object[]} data - Array of records.
+ * @param {Array[]} annotation - Genome annotation.
+ */
 function annotateChromosome(data, annotation) {
     const startPoints = annotation.map(ann => ann[1]);
 
@@ -12,7 +23,11 @@ function annotateChromosome(data, annotation) {
     }
 }
 
-
+/**
+ * Mutates input data adding "geneName" property chromosome by chromosome.
+ * @param {object[]} data - Array of records.
+ * @param {Array[]} annotation - Genome annotation.
+ */
 function annotate(data, annotation) {
     const dataByChr = Object.groupBy(data, d => d.chr);
     const annotationByChr = Object.groupBy(annotation, ann => ann[0]);
