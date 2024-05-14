@@ -148,8 +148,8 @@ class ChartOption {
                     return `<div>${position}</div>`
                         + (!currentRow.label && currentRow.geneName ? `<div>Gene name: ${currentRow.geneName}</div>` : '')
                         + series
-                        + (currentRow.total ? `<div>Total: ${currentRow.total}</div>` : '')
-                        + (currentRow.minor ? `<div>Minor: ${currentRow.minor}</div>` : '');
+                        + (currentRow.total !== null ? `<div>Total: ${currentRow.total}</div>` : '')
+                        + (currentRow.minor !== null ? `<div>Minor: ${currentRow.minor}</div>` : '');
                 },
             },
             axisPointer: {
