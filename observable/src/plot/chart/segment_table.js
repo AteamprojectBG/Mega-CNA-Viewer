@@ -33,11 +33,13 @@ class SegmentTable {
      * @param {string} tableId - Table id.
      * @param {Object} chart - Chart object.
      * @param {Array} dataTable - Loaded data.
+     * @param {Array} segmentTableData - Previously selected data.
      */
-    constructor(tableId, chart, tdTable, dataTable) {
+    constructor(tableId, chart, tdTable, dataTable, segmentTableData) {
         this.tableId = tableId;
         this.chart = chart;
-        this.table = this.#createTable(tableId);
+        this.segmentTableData = segmentTableData;
+        this.table = this.#createTable();
         
         chart.on('brushselected', (params) => {
             const selectedPosArray = params.batch[0].selected[0].dataIndex;
@@ -74,6 +76,7 @@ class SegmentTable {
             this.#rowData.total = closestMatch.total;
             this.#rowData.minor = closestMatch.minor;
 
+            this.segmentTableData.push({ ...this.#rowData });
             this.table.addRow({ ...this.#rowData });
         });
     }
@@ -86,6 +89,7 @@ class SegmentTable {
         return new Tabulator(`#${this.tableId}`, {
             layout:'fitDataTable',
             maxHeight: '400px',
+            data: this.segmentTableData,
             columns:[
                 { title: 'Chr', field: 'chr', },
                 { title: 'Start', field: 'posStart' },

@@ -28,7 +28,8 @@ class CNAPlot {
         const chartOption = new ChartOption(tdTable, dataTable);
         this.chart.setOption(chartOption.getOption());
 
-        this.segmentTable = new SegmentTable(tableId, this.chart, tdTable, dataTable);
+        this.segmentTableData = [];
+        this.segmentTable = new SegmentTable(tableId, this.chart, tdTable, dataTable, this.segmentTableData);
     }
 
     /**
@@ -81,7 +82,7 @@ class CNAPlot {
             const chartOption = new ChartOption(this.tdTable, this.dataTable);
             this.chart.setOption(chartOption.getOption());
             this.segmentTable.turnOffEvents();
-            this.segmentTable = new SegmentTable(this.tableId, this.chart, this.tdTable, this.dataTable);
+            this.segmentTable = new SegmentTable(this.tableId, this.chart, this.tdTable, this.dataTable, this.segmentTableData);
             return '';
         }
         
@@ -109,7 +110,7 @@ class CNAPlot {
         const chartOption = new ChartOption(this.tdTable, dataTableFiltered);
         this.chart.setOption(chartOption.getOption());
         this.segmentTable.turnOffEvents();
-        this.segmentTable = new SegmentTable(this.tableId, this.chart, this.tdTable, dataTableFiltered);
+        this.segmentTable = new SegmentTable(this.tableId, this.chart, this.tdTable, dataTableFiltered, this.segmentTableData);
         return '';
     };
 
@@ -122,6 +123,13 @@ class CNAPlot {
         }
 
         this.segmentTable.table.download('csv', 'segment-table.csv');
+    };
+
+    /**
+     * Clear selected segments.
+     */
+    clearData = () => {
+        this.segmentTable.table.clearData();
     };
 }
 

@@ -154,10 +154,11 @@
   height: 15px;
 }
 
-.export {
+.action {
   display: flex;
   justify-content: flex-end;
   padding-top: 5px;
+  gap: 10px;
 }
 
 .table-section {
@@ -169,7 +170,7 @@
   width: 100%;
 }
 
-#export-btn {
+#export-btn, #clear-btn {
   margin-top: 10px;
   display: inline-flex;
   gap: 5px;
@@ -186,6 +187,8 @@
   cursor: pointer;
 }
 
+#clear-btn:hover,
+#clear-btn:focus,
 #export-btn:hover,
 #export-btn:focus {
   background-color: var(--button-hover);
@@ -197,6 +200,15 @@
   width: 20px;
   height: 20px;
   background-image: url(./export_icon.svg);
+  background-size: cover;
+}
+
+#clear-btn::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-image: url(./trash_icon.svg);
   background-size: cover;
 }
 

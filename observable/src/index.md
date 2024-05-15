@@ -52,6 +52,7 @@ const inputFileGen = Generators.input(inputFile)
 
 ```js
 document.getElementById('export-btn').addEventListener('click', () => cnaPlot.exportData());
+document.getElementById('clear-btn').addEventListener('click', () => cnaPlot.clearData());
 ```
 
 ```js
@@ -158,7 +159,8 @@ const rerenderPlot = (currentPosition='') => {
     </section>
     <section class="card-item">
       <div id="table"></div>
-      <div class="export">
+      <div class="action">
+        <button id="clear-btn">Clear</button>
         <button id="export-btn">Export</button>
       </div>
     </section>
