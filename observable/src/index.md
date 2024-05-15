@@ -23,7 +23,7 @@ const formValues = Mutable([]);
 
 const initialValues = {
     purity: 0.83,
-    tumorPloidy: 3,
+    tumorPloidy: 2,
     normalPloidy: 2,
     copyNumbers: "2,3,4",
   }
