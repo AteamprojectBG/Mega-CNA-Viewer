@@ -108,6 +108,8 @@ class CNAPlot {
 
         const chartOption = new ChartOption(this.tdTable, dataTableFiltered);
         this.chart.setOption(chartOption.getOption());
+        this.segmentTable.turnOffEvents();
+        this.segmentTable = new SegmentTable(this.tableId, this.chart, this.tdTable, dataTableFiltered);
         return '';
     };
 
