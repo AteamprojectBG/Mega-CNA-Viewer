@@ -130,7 +130,6 @@ const rerenderPlot = (currentPosition='') => {
 // const clrBtn = html`<button class="clear" type="button">&#x2715;</button>`
 const clearBtn = document.querySelector(".clearBtn")
 clearBtn.addEventListener("click", (e) => {
-  console.log("CLICKED")
   const input = document.querySelector("input#chrInput")
   input.value = ""
   rerenderPlot()
