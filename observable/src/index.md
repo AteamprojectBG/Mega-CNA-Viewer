@@ -25,7 +25,7 @@ const initialValues = {
     purity: 0.83,
     tumorPloidy: 2,
     normalPloidy: 2,
-    copyNumbers: "2,3,4",
+    copyNumbers: "0,1,2,3,4,5,6,7,8",
   }
 
 const purityInput = html`<input id="purityInput" type="number" placeholder="Enter purity" value="${initialValues.purity}" min="0" required/>`
