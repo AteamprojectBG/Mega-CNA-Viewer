@@ -34,12 +34,11 @@
   padding: 5px;
   border-radius: 5px;
   border: 1px solid #ccc;
-  margin-top: 0.2rem;
 }
 
-.sidebar input[type="text"],
-.sidebar input[type="number"] {
-  margin-top: 0.2rem;
+.main-section .sidebar label{
+  display: block;
+  margin-bottom: 5px;
 }
 
 .inputForm {
@@ -68,6 +67,38 @@
 .sidebar .inputForm span:has(input[type="text"]:invalid) ~ .error-msg,
 .sidebar .inputForm.chr-input .error-msg:not(:empty) {
   visibility: visible;
+}
+
+.sidebar .inputForm.chr-input .positionContainer {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+  box-sizing: border-box;
+}
+
+.sidebar .inputForm.chr-input .positionContainer span {
+  width: 100%;
+}
+
+.sidebar .inputForm.chr-input button.clearBtn {
+  position: absolute;
+  border: none;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  right: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.sidebar .inputForm.chr-input button.clearBtn:hover {
+  color: red;
 }
 
 .sidebar .inputForm form:has(input[type="file"]),

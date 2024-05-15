@@ -126,6 +126,17 @@ const rerenderPlot = (currentPosition='') => {
 };
 ```
 
+```js
+// const clrBtn = html`<button class="clear" type="button">&#x2715;</button>`
+const clearBtn = document.querySelector(".clearBtn")
+clearBtn.addEventListener("click", (e) => {
+  console.log("CLICKED")
+  const input = document.querySelector("input#chrInput")
+  input.value = ""
+  rerenderPlot()
+})
+```
+
 <div class="main-section">
   <div class="sidebar card-item">
     <div class="inputForm">
@@ -140,8 +151,11 @@ const rerenderPlot = (currentPosition='') => {
     </div>
     <div class="chr-input inputForm">
       <h3>Search:</h3>
-      <div><label for="chrInput">Chromosome position</label>
-      ${positionInput}
+      <div>
+      <label for="chrInput">Chromosome position</label>
+      <div class="positionContainer">
+      ${positionInput} <button class="clearBtn" type="button">&#x2715;</button>
+      </div>
       <div class="error-msg">${rerenderPlot(position)}</div>
       </div>
     </div>
